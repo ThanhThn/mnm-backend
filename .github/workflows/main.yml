@@ -17,12 +17,6 @@ jobs:
       uses: shivammathur/setup-php@v2  # Set up PHP
       with:
         php-version: '8.1'  # Specify the PHP version you're using
-        tools: 'composer'
-
-    - name: Install dependencies
-      run: |
-        curl -sS https://getcomposer.org/installer | php  # Install Composer if not already installed
-        php composer.phar install --no-dev --optimize-autoloader  # Install Laravel dependencies
 
     - name: Deploy to CPanel via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
