@@ -45,14 +45,22 @@ class ScrapingController extends Controller
             if($responseJson['status'] == 'success'){
                 $quantityComics = $quantity <= count($responseJson["data"]["items"]) ? $quantity : count($responseJson["data"]["items"]);
                 for($i = 0; $i < $quantityComics; $i++){
-                    $comic = Comics::create([
+                    $exist = Comics::where('api_id', $responseJson["data"]["items"][$i]["_id"])->exists();
+                    $comic = $exist ?
+                        Comics::where('api_id', $responseJson["data"]["items"][$i]["_id"])->first() :
+                        Comics::create([
                         "api_id" => $responseJson["data"]["items"][$i]["_id"],
                     ]);
-                    NovelCategory::create([
-                        "category_id" => $category->id,
-                        "novel_id" => $comic->id,
-                        "novel_type" => "comic"
-                    ]);
+                    $existConnect = NovelCategory::where("category_id", $category->id)
+                        ->where("novel_id", $comic->id)
+                        ->exists();
+                    if(!$existConnect){
+                        NovelCategory::create([
+                            "category_id" => $category->id,
+                            "novel_id" => $comic->id,
+                            "novel_type" => "comic"
+                        ]);
+                    }
                 }
             }
         }
