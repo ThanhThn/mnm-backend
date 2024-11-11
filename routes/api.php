@@ -22,4 +22,5 @@ Route::group([
 
 ], function ($router) {
     Route::post('/users/register', [AuthController::class, 'registerUser']);
+    Route::post('/users/login', [AuthController::class, 'loginUser']);
 });
