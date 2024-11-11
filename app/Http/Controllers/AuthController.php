@@ -70,17 +70,6 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function logoutUser()
-    {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    public function profile()
-    {
-        return response()->json(auth()->user());
-    }
-
     public function loginAdmin(Request $request)
     {
         $credentials = $request->only(['email', 'password']);
@@ -94,6 +83,17 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function profile()
+    {
+        return response()->json(auth()->user());
     }
 
     protected function respondWithToken($token)
