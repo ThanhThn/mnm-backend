@@ -19,4 +19,5 @@ Route::get('/', function () {
 
 Route::group(["namespace" => "App\Http\Controllers\DataScraping", "prefix" => "scraping"], function () {
     Route::get("/category", "ScrapingController@scrapingCategories");
+    Route::get("/comics", "ScrapingController@scrapingComics");
 });
