@@ -21,8 +21,12 @@ Route::group([
     'prefix' => 'auth'
 
 ], function ($router) {
+    #User
     Route::post('/users/register', [AuthController::class, 'registerUser']);
     Route::post('/users/login', [AuthController::class, 'loginUser']);
     Route::post('/user/logout', [AuthController::class, 'logoutUser']);
     Route::get('/user/profile', [AuthController::class, 'profile']);
+
+    #Admin
+    Route::post('/admin/login', [AuthController::class, 'loginAdmin']);
 });
