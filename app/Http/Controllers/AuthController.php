@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['registerUser', 'loginUser']]);
+        $this->middleware('auth:api', ['except' => ['registerUser', 'loginUser', 'loginAdmin']]);
     }
 
     function registerUser(Request $request)
@@ -59,14 +59,41 @@ class AuthController extends Controller
     }
 
 
-    public function loginUser()
+    public function loginUser(Request $request)
     {
-        $credentials = request(['email', 'password']);
-        if (! $token = auth()->attempt($credentials)) {
+        $credentials = $request->only(['email', 'password']);
+        $remember = $request->has('remember');
+        if (! $token = auth()->attempt($credentials, $remember)) {
             return response()->json(['error' => 'Email hoặc mật khẩu không hợp lệ'], 401);
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function loginAdmin(Request $request)
+    {
+        $credentials = $request->only(['email', 'password']);
+        $remember = $request->has('remember');
+        if (! $token = auth()->attempt($credentials, $remember)) {
+            return response()->json(['error' => 'Email hoặc mật khẩu không hợp lệ'], 401);
+        }
+
+        if (auth()->user()->role != 1) {
+            return response()->json(['error' => 'Bạn không có quyền truy cập trang này'], 403);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function profile()
+    {
+        return response()->json(auth()->user());
     }
 
     protected function respondWithToken($token)
@@ -76,16 +103,5 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
-    }
-
-    public function logoutUser()
-    {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    public function profile()
-    {
-        return response()->json(auth()->user());
     }
 }
