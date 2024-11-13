@@ -2,40 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function __construct()
+    function registerUser(RegisterRequest $request)
     {
-        $this->middleware('auth:api', ['except' => ['registerUser', 'loginUser', 'loginAdmin']]);
-    }
-
-    function registerUser(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => JsonResponse::HTTP_BAD_REQUEST,
-                'errors' => [
-                    $validator->errors()
-                ]
-            ], 400);
-        }
 
         $name = $request->input('name');
         $email = $request->input('email');
         $password = $request->input('password');
-
         $user = User::create([
             'name' => $name,
             'email' => $email,
@@ -47,8 +30,10 @@ class AuthController extends Controller
             $token = JWTAuth::attempt(['email' => $email, 'password' => $password]);
             return response()->json([
                 'status' => JsonResponse::HTTP_CREATED,
-                'message' => 'User successfully registered',
-                'token' => $token,
+                'body' => [
+                    'message' => 'User successfully registered',
+                    'token' => $token,
+                ]
             ], JsonResponse::HTTP_OK);
         }
 
@@ -61,10 +46,13 @@ class AuthController extends Controller
 
     public function loginUser(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
-        $remember = $request->has('remember');
-        if (! $token = auth()->attempt($credentials, $remember)) {
-            return response()->json(['error' => 'Email hoặc mật khẩu không hợp lệ'], 401);
+        $token = JWTAuth::attempt($request->only(['email', 'password']));
+        if (!$token) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_UNAUTHORIZED,
+                'body' => [
+                    'message' => 'Unauthorized'
+                ]], JsonResponse::HTTP_OK);
         }
 
         return $this->respondWithToken($token);
@@ -72,36 +60,45 @@ class AuthController extends Controller
 
     public function loginAdmin(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
-        $remember = $request->has('remember');
-        if (! $token = auth()->attempt($credentials, $remember)) {
-            return response()->json(['error' => 'Email hoặc mật khẩu không hợp lệ'], 401);
+        $token = JWTAuth::attempt($request->only(['email', 'password']));
+        if (!$token) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_UNAUTHORIZED,
+                'body' => [
+                    'message' => 'Unauthorized'
+                ]], JsonResponse::HTTP_OK);
         }
 
-        if (auth()->user()->role != 1) {
-            return response()->json(['error' => 'Bạn không có quyền truy cập trang này'], 403);
+        if (Auth::user()->role != 1) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_FORBIDDEN,
+                'body' => [
+                    'message' => 'Unauthorized'
+                ]], JsonResponse::HTTP_OK);
         }
 
         return $this->respondWithToken($token);
     }
 
-    public function logout()
-    {
-        auth()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
 
     public function profile()
     {
-        return response()->json(auth()->user());
+        $user = User::find(Auth::user()->id);
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'user' => $user
+            ]
+        ], JsonResponse::HTTP_OK);
     }
 
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'token' => $token,
+            ]
+        ], JsonResponse::HTTP_OK);
     }
 }
