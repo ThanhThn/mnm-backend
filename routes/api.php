@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\AuthorController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,4 +37,17 @@ Route::get('profile', [AuthController::class, 'profile'])->middleware('jwt.verif
 
 Route::group(['prefix' => 'image'], function ($router) {
     Route::post('upload', [ImageController::class, 'upload']);
+});
+
+Route::group(['prefix' => 'author', ], function ($router) {
+    Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
+        Route::post('create', [AuthorController::class, 'createAuthor']);
+        Route::post('delete/{id}', [AuthorController::class, 'deleteAuthor']);
+        Route::post('update', [AuthorController::class, 'updateAuthor']);
+    });
+    Route::get('list', [AuthorController::class, 'listAuthors']);
+});
+
+Route::group(['prefix' => 'image'], function ($router) {
+    Route::post('upload', [ImageController::class, 'upload'])->middleware('jwt.verify');
 });

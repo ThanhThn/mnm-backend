@@ -12,7 +12,7 @@ class ImageController extends Controller
 {
     function upload(UploadRequest $request, S3Utils $utils)
     {
-        $path = $utils->upload($request->file('file'));
+        $path = $utils->upload($request->file('file'), 'images');
         $image = [
             'path' => $path,
             'title' => $request->title,
@@ -28,7 +28,7 @@ class ImageController extends Controller
             return response()->json([
                 'status'=> JsonResponse::HTTP_OK,
                 'body' => [
-                    'data' => $image
+                    'data' => $result
             ]], JsonResponse::HTTP_OK);
         }
         return response()->json([

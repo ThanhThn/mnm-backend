@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Request\Author\AuthorRequest;
+use App\Http\Request\Author\EditAuthorRequest;
 use App\Models\Author;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
-    function createAuthor(Request $request)
+    function createAuthor(AuthorRequest $request)
     {
         $data = $request->only(['full_name']);
         if(!empty($request->pen_name)){
@@ -47,6 +49,25 @@ class AuthorController extends Controller
                 'data' => $authors
             ]
         ], JsonResponse::HTTP_OK);
+    }
+
+    function updateAuthor(EditAuthorRequest $request)
+    {
+        $data = array_filter(
+            $request->all(['full_name', 'birth_date', 'profile_picture_id', 'pen_name']),
+            fn($value) => !empty($value));
+        $author = Author::find($request->id);
+
+
+        $result = $author->update($data);
+
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $author
+            ]
+        ], JsonResponse::HTTP_OK);
+
     }
 
     function deleteAuthor($id){
