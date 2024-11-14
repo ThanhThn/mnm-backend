@@ -15,9 +15,9 @@ class CategoryRequest extends BaseRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique((new Category())->getTable())->ignore($this->route()->parameter('category')->id ?? null)
+                Rule::unique((new Category())->getTable())->ignore($this->id ?? null)
             ],
-            'description' => 'string',
+            'description' => 'string|nullable',
         ];
     }
 }
