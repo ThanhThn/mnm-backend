@@ -28,7 +28,7 @@ class ImageController extends Controller
             return response()->json([
                 'status'=> JsonResponse::HTTP_OK,
                 'body' => [
-                    'image' => $image
+                    'data' => $image
             ]], JsonResponse::HTTP_OK);
         }
         return response()->json([

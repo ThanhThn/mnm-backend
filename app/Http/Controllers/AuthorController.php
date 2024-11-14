@@ -33,7 +33,7 @@ class AuthorController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_CREATED,
             'body' => [
-                'author' => $author
+                'data' => $author
             ]
         ], JsonResponse::HTTP_OK);
     }
@@ -44,7 +44,7 @@ class AuthorController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'authors' => $authors
+                'data' => $authors
             ]
         ], JsonResponse::HTTP_OK);
     }
