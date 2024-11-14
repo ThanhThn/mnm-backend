@@ -55,8 +55,8 @@ Route::group(['prefix' => 'image'], function ($router) {
 Route::group(['prefix' => 'category',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [CategoryControlller::class, 'createCategory']);
-        Route::post('delete/{id}', [CategoryControlller::class, 'deleteCategory']);
+        Route::delete('delete/{id}', [CategoryControlller::class, 'deleteCategory']);
         Route::post('update', [CategoryControlller::class, 'updateCategory']);
     });
-    Route::get('list', [CategoryControlller::class, 'listCategorys']);
+    Route::get('list', [CategoryControlller::class, 'listCategories']);
 });

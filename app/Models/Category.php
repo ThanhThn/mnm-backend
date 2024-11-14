@@ -12,7 +12,9 @@ class Category extends Model
     protected $table = 'categories';
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'description',
+        'status'
     ];
 
     protected $hidden = [
@@ -24,12 +26,12 @@ class Category extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected static function boot(){
+    protected static function boot()
+    {
         parent::boot();
         static::creating(function ($query) {
-            if(empty($query->id)){
+            if (empty($query->id)) {
                 $query->id = (string) Str::uuid();
-                $query->status = 1;
             }
         });
     }
