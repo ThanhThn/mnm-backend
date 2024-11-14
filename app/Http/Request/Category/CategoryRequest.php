@@ -18,6 +18,7 @@ class CategoryRequest extends BaseRequest
                 Rule::unique((new Category())->getTable())->ignore($this->id ?? null)
             ],
             'description' => 'string|nullable',
+            'status' => 'integer|required'
         ];
     }
 }

@@ -24,7 +24,7 @@ class CategoryControlller extends Controller
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
                     'message' => 'Category successfully created',
-                    'category' => $category
+                    'data' => $category
                 ]
             ], JsonResponse::HTTP_OK);
         }
@@ -37,27 +37,19 @@ class CategoryControlller extends Controller
     public function updateCategory(CategoryRequest $request)
     {
         $category = Category::find($request->id);
-        if ($category) {
-            $request->validated();
-            $category->update([
-                'name' => $request->name,
-                'slug' => Helpers::createSlug($request->name),
-                'description' => $request->description,
-                'status' => $request->status
-            ]);
-            return response()->json([
-                'status' => JsonResponse::HTTP_OK,
-                'body' => [
-                    'message' => 'Category successfully updated',
-                    'data' => $category
-                ]
-            ], JsonResponse::HTTP_OK);
-        }
-
+        $category->update([
+            'name' => $request->name,
+            'slug' => Helpers::createSlug($request->name),
+            'description' => $request->description,
+            'status' => $request->status
+        ]);
         return response()->json([
-            'status' => JsonResponse::HTTP_BAD_REQUEST,
-            'message' => 'Category not found or something went wrong',
-        ], JsonResponse::HTTP_BAD_REQUEST);
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Category successfully updated',
+                'data' => $category
+            ]
+        ], JsonResponse::HTTP_OK);
     }
 
     public function listCategories()
