@@ -70,4 +70,24 @@ class CategoryControlller extends Controller
             ]
         ], JsonResponse::HTTP_OK);
     }
+
+    public function deleteCategory($id)
+    {
+        $category = Category::find($id);
+        if ($category) {
+            $category->delete();
+            return response()->json([
+                'status' => JsonResponse::HTTP_OK,
+                'body' => [
+                    'message' => 'Category deleted'
+                ]
+            ], JsonResponse::HTTP_OK);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_NOT_FOUND,
+            'body' => [
+                'message' => 'Category not found'
+            ]
+        ], JsonResponse::HTTP_NOT_FOUND);
+    }
 }
