@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
 use Illuminate\Http\Request;
