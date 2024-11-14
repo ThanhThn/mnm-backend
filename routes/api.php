@@ -58,5 +58,5 @@ Route::group(['prefix' => 'category',], function ($router) {
         Route::post('delete/{id}', [CategoryControlller::class, 'deleteCategory']);
         Route::post('update', [CategoryControlller::class, 'updateCategory']);
     });
-    Route::get('list', [CategoryControlller::class, 'listCategorys']);
+    Route::get('list', [CategoryControlller::class, 'listCategories']);
 });

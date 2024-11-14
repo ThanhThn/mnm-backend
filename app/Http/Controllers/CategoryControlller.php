@@ -59,4 +59,15 @@ class CategoryControlller extends Controller
             'message' => 'Category not found or something went wrong',
         ], JsonResponse::HTTP_BAD_REQUEST);
     }
+
+    public function listCategories()
+    {
+        $category = Category::all();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $category
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
 }
