@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -16,19 +17,22 @@ use App\Http\Controllers\AuthController;
 */
 
 Route::group([
-
     'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
     #User
-    Route::post('/users/register', [AuthController::class, 'registerUser']);
-    Route::post('/users/login', [AuthController::class, 'loginUser']);
-    Route::post('/user/logout', [AuthController::class, 'logout']);
-    Route::get('/user/profile', [AuthController::class, 'profile']);
+    Route::group(['prefix' => 'user'], function ($router) {
+        Route::post('register', [AuthController::class, 'registerUser']);
+        Route::post('login', [AuthController::class, 'loginUser']);
+    });
 
     #Admin
-    Route::post('/admin/login', [AuthController::class, 'loginAdmin']);
-    Route::post('/admin/logout', [AuthController::class, 'logout']);
-    Route::post('/admin/profile', [AuthController::class, 'profile']);
+    Route::group(['prefix' => 'admin'], function ($router) {
+        Route::post('/login', [AuthController::class, 'loginAdmin']);
+    });
+});
+Route::get('profile', [AuthController::class, 'profile'])->middleware('jwt.verify');
+
+Route::group(['prefix' => 'image'], function ($router) {
+    Route::post('upload', [ImageController::class, 'upload']);
 });
