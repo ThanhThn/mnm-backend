@@ -11,12 +11,8 @@ class CategoryRequest extends BaseRequest
     public function rules()
     {
         return [
+            'id' => 'nullable|uuid|exists:categories,id',
             'name' => [
-                'required',
-                'string',
-                Rule::unique((new Category())->getTable())->ignore($this->route()->parameter('category')->id ?? null)
-            ],
-            'slug' => [
                 'required',
                 'string',
                 Rule::unique((new Category())->getTable())->ignore($this->route()->parameter('category')->id ?? null)
