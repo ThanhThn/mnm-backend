@@ -37,4 +37,31 @@ class StoryController extends Controller
             ]
         ], JsonResponse::HTTP_OK);
     }
+
+
+
+    public function updateStory(EditStoryRequest $request)
+    {
+        $story = Story::find($request->id);
+        $story->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'author_id' => $request->author_id,
+            'thumbnail_id' => $request->thumbnail_id,
+            'status' => $request->status
+        ]);
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Story successfully updated',
+                'data' => $story
+            ]
+        ]);
+        return response()->json([
+            'status' => JsonResponse::HTTP_BAD_REQUEST,
+            'body' => [
+                'message' => 'Failed to update story'
+            ]
+        ]);
+    }
 }
