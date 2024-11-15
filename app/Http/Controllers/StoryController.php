@@ -38,8 +38,6 @@ class StoryController extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
-
-
     public function updateStory(EditStoryRequest $request)
     {
         $story = Story::find($request->id);
@@ -63,5 +61,36 @@ class StoryController extends Controller
                 'message' => 'Failed to update story'
             ]
         ]);
+    }
+
+    public function listStories()
+    {
+        $stories = Story::with('storyPicture')->get();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $stories
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
+
+    public function deleteStory($id)
+    {
+        $story = Story::find($id);
+        if ($story) {
+            $story->delete();
+            return response()->json([
+                'status' => JsonResponse::HTTP_OK,
+                'body' => [
+                    'message' => 'Story successfully deleted'
+                ]
+            ], JsonResponse::HTTP_OK);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_NOT_FOUND,
+            'body' => [
+                'message' => 'Story not found'
+            ]
+        ], JsonResponse::HTTP_NOT_FOUND);
     }
 }
