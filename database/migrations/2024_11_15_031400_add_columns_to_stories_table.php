@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('stories', function (Blueprint $table) {
-            $table->integer('active_status')->default(1);
-            $table->integer('completed_status');
+            $table->integer('status');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('stories', function (Blueprint $table) {
-            $table->dropColumn('active_status');
-            $table->dropColumn('completed_status');
+            $table->dropColumn('status');
         });
     }
 };
