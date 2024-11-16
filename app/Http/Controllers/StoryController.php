@@ -19,17 +19,26 @@ class StoryController extends Controller
             'description' => $request->description,
             'author_id' => $request->author_id,
             'thumbnail_id' => $request->thumbnail_id,
-            'status' => $request->status
+            'status' => $request->status,
         ]);
+
         if ($story) {
+            if ($request->has('category_ids') && is_array($request->category_ids)) {
+                $categoryData = [];
+                foreach ($request->category_ids as $category) {
+                    $categoryData[$category] = ['novel_type' => 'story'];
+                }
+                $story->categories()->sync($categoryData);
+            }
             return response()->json([
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
                     'message' => 'Story successfully created',
-                    'data' => $story
+                    'data' => $story->load('categories')
                 ]
             ], JsonResponse::HTTP_OK);
         }
+
         return response()->json([
             'status' => JsonResponse::HTTP_BAD_REQUEST,
             'body' => [
@@ -37,6 +46,7 @@ class StoryController extends Controller
             ]
         ], JsonResponse::HTTP_OK);
     }
+
 
     public function updateStory(EditStoryRequest $request)
     {

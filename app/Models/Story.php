@@ -40,4 +40,9 @@ class Story extends Model
     {
         return $this->belongsTo(Image::class, 'thumbnail_id');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id')->withPivot('novel_type');
+    }
 }

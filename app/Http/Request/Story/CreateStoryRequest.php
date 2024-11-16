@@ -13,6 +13,9 @@ class CreateStoryRequest extends BaseRequest
             'description' => 'required|string',
             'status' => 'required|integer',
             'thumbnail_id' => 'required|uuid|exists:images,id',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'uuid|exists:categories,id',
+            'author_id' => 'required|uuid|exists:authors,id'
         ];
     }
 }
