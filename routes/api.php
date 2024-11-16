@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
-
+use App\Http\Controllers\InteractionController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -72,4 +72,11 @@ Route::group(['prefix' => 'story',], function ($router) {
     });
     Route::get('list', [StoryController::class, 'listStories']);
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
+});
+
+/* ---------API Interaction----------- */
+Route::group(['prefix' => 'interaction',], function ($router) {
+    Route::group(['middleware' => ['jwt.verify']], function ($router) {
+        Route::post('add', [InteractionController::class, 'addInteraction']);
+    });
 });

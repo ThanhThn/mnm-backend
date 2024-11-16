@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('interactions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('object_a_id');
             $table->uuid('object_b_id');
             $table->smallInteger('object_a_type')->index();
             $table->smallInteger('object_b_type')->index();
             $table->smallInteger('interaction_type')->index()->comment('1: like, 2: follow');
-            $table->primary(['object_a_id', 'object_b_id']);
             $table->timestamps();
         });
     }

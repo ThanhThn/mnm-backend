@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\Interaction\InteractionSupport;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -12,6 +14,9 @@ class Comics extends Model
     protected $table="comics";
     protected $fillable=[
         "api_id"
+    ];
+    protected $appends = [
+        'likes'
     ];
 
     protected $hidden = ["created_at"];
@@ -27,5 +32,9 @@ class Comics extends Model
                 $query->status = 1;
             }
         });
+    }
+
+    public function getLikesAttribute(){
+        return InteractionSupport::countInteraction(1, $this->id, 3);
     }
 }
