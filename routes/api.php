@@ -3,9 +3,9 @@
 use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,4 +59,13 @@ Route::group(['prefix' => 'category',], function ($router) {
         Route::post('update', [CategoryControlller::class, 'updateCategory']);
     });
     Route::get('list', [CategoryControlller::class, 'listCategories']);
+});
+
+Route::group(['prefix' => 'story',], function ($router) {
+    Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
+        Route::post('create', [StoryController::class, 'createStory']);
+        Route::delete('delete/{id}', [StoryController::class, 'deleteStory']);
+        Route::post('update', [StoryController::class, 'updateStory']);
+    });
+    Route::get('list', [StoryController::class, 'listStories']);
 });
