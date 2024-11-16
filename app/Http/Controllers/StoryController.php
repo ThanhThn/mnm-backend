@@ -34,7 +34,7 @@ class StoryController extends Controller
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
                     'message' => 'Story successfully created',
-                    'data' => $story->load('categories')
+                    'data' => $story->load('categories', 'storyPicture')
                 ]
             ], JsonResponse::HTTP_OK);
         }
@@ -53,18 +53,28 @@ class StoryController extends Controller
         $story = Story::find($request->id);
         $story->update([
             'name' => $request->name,
+            'slug' => Helpers::createSlug($request->name),
             'description' => $request->description,
             'author_id' => $request->author_id,
             'thumbnail_id' => $request->thumbnail_id,
             'status' => $request->status
         ]);
-        return response()->json([
-            'status' => JsonResponse::HTTP_OK,
-            'body' => [
-                'message' => 'Story successfully updated',
-                'data' => $story
-            ]
-        ]);
+        if ($story) {
+            if ($request->has('category_ids') && is_array($request->category_ids)) {
+                $categoryData = [];
+                foreach ($request->category_ids as $category) {
+                    $categoryData[$category] = ['novel_type' => 'story'];
+                }
+                $story->categories()->sync($categoryData);
+            }
+            return response()->json([
+                'status' => JsonResponse::HTTP_OK,
+                'body' => [
+                    'message' => 'Story successfully updated',
+                    'data' => $story->load('categories')
+                ]
+            ]);
+        }
         return response()->json([
             'status' => JsonResponse::HTTP_BAD_REQUEST,
             'body' => [
@@ -75,7 +85,7 @@ class StoryController extends Controller
 
     public function listStories()
     {
-        $stories = Story::with('storyPicture')->get();
+        $stories = Story::with('storyPicture', 'categories')->get();
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
@@ -88,6 +98,10 @@ class StoryController extends Controller
     {
         $story = Story::find($id);
         if ($story) {
+            $story->categories()->detach();
+            if ($story->storyPicture) {
+                $story->storyPicture()->delete();
+            }
             $story->delete();
             return response()->json([
                 'status' => JsonResponse::HTTP_OK,

@@ -43,6 +43,6 @@ class Story extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id')->withPivot('novel_type');
+        return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id')->withPivot('novel_type')->withTimestamps();
     }
 }
