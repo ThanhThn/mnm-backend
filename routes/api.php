@@ -53,6 +53,7 @@ Route::group(['prefix' => 'image'], function ($router) {
     Route::post('upload', [ImageController::class, 'upload'])->middleware('jwt.verify');
 });
 
+/* --------- API Category ----------- */
 Route::group(['prefix' => 'category',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [CategoryControlller::class, 'createCategory']);
@@ -62,6 +63,7 @@ Route::group(['prefix' => 'category',], function ($router) {
     Route::get('list', [CategoryControlller::class, 'listCategories']);
 });
 
+/* --------- API Story ----------- */
 Route::group(['prefix' => 'story',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [StoryController::class, 'createStory']);
