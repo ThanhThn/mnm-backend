@@ -5,6 +5,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
 
 /*
@@ -68,4 +69,5 @@ Route::group(['prefix' => 'story',], function ($router) {
         Route::post('update', [StoryController::class, 'updateStory']);
     });
     Route::get('list', [StoryController::class, 'listStories']);
+    Route::get('completed-stories', [HomeController::class, 'completed_stories']);
 });

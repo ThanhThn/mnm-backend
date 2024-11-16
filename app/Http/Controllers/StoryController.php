@@ -23,13 +23,11 @@ class StoryController extends Controller
         ]);
 
         if ($story) {
-            if ($request->has('category_ids') && is_array($request->category_ids)) {
-                $categoryData = [];
-                foreach ($request->category_ids as $category) {
-                    $categoryData[$category] = ['novel_type' => 'story'];
-                }
-                $story->categories()->sync($categoryData);
+            $categoryData = [];
+            foreach ($request->category_ids as $category) {
+                $categoryData[$category] = ['novel_type' => 'story'];
             }
+            $story->categories()->sync($categoryData);
             return response()->json([
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
@@ -60,13 +58,12 @@ class StoryController extends Controller
             'status' => $request->status
         ]);
         if ($story) {
-            if ($request->has('category_ids') && is_array($request->category_ids)) {
-                $categoryData = [];
-                foreach ($request->category_ids as $category) {
-                    $categoryData[$category] = ['novel_type' => 'story'];
-                }
-                $story->categories()->sync($categoryData);
+            $categoryData = [];
+            foreach ($request->category_ids as $category) {
+                $categoryData[$category] = ['novel_type' => 'story'];
             }
+            $story->categories()->sync($categoryData);
+
             return response()->json([
                 'status' => JsonResponse::HTTP_OK,
                 'body' => [
@@ -85,7 +82,7 @@ class StoryController extends Controller
 
     public function listStories()
     {
-        $stories = Story::with('storyPicture', 'categories')->get();
+        $stories = Story::with('categories')->get();
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
