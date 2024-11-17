@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,6 +29,8 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'google_id',
     ];
+    protected $primaryKey = 'id';
+    public $incrementing = false;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -64,5 +67,12 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    protected static function boot(){
+        parent::boot();
+        static::creating(function ($model) {
+            $model->id = Str::uuid();
+        });
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Http\JsonResponse;
+
 class Helpers
 {
     public static function createSlug($text)
@@ -16,5 +18,22 @@ class Helpers
         $slug = preg_replace('/[\s-]+/', '-', $slug);
         $slug = trim($slug, '-');
         return $slug;
+    }
+
+    public static function response($status, $message = '', $data = null)
+    {
+        $response = [
+            'status' => $status,
+            'body' => [
+            ]
+        ];
+
+        if (!empty($message)) {
+            $response['body']['message'] = $message;
+        }
+        if (!empty($data)) {
+            $response['body']['data'] =  $data;
+        }
+        return response()->json($response, JsonResponse::HTTP_OK);
     }
 }
