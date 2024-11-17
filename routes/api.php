@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
@@ -44,7 +45,7 @@ Route::group(['prefix' => 'image'], function ($router) {
 Route::group(['prefix' => 'author',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [AuthorController::class, 'createAuthor']);
-        Route::post('delete/{id}', [AuthorController::class, 'deleteAuthor']);
+        Route::delete('delete/{id}', [AuthorController::class, 'deleteAuthor']);
         Route::post('update', [AuthorController::class, 'updateAuthor']);
     });
     Route::get('list', [AuthorController::class, 'listAuthors']);
@@ -88,9 +89,21 @@ Route::group(['prefix' => 'interaction',], function ($router) {
     });
     Route::post('check', [InteractionController::class, 'checkInteraction']);
 });
+
 /* ---------API Comment----------- */
 Route::group(['prefix' => 'comment', 'namespace' => 'App\Http\Controllers'], function ($router) {
     Route::post('add', 'CommentController@addComment')->middleware('jwt.verify');
     Route::post('list', 'CommentController@listComments');
+});
+
+/* ---------API Ads----------- */
+Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], function ($router) {
+    Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
+        Route::post('create', 'AdvertisementController@createAds');
+        Route::delete('delete/{id}', [AdvertisementController::class, 'deleteAds']);
+        Route::post('update', [AdvertisementController::class, 'updateAds']);
+        Route::post('list', 'AdvertisementController@listAds');
+    });
+    Route::get('random', 'AdvertisementController@getAdsRandom');
 });
 
