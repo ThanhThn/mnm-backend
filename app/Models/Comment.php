@@ -32,11 +32,11 @@ class Comment extends Model
             $model->id = Str::uuid();
         });
         static::addGlobalScope(function (Builder $builder) {
-            $builder->with(['user', 'parentComment']);
+            $builder->with(['user', 'reply']);
         });
     }
 
-    public function parentComment(){
-        return $this->belongsTo(Comment::class);
+    public function reply(){
+        return $this->hasMany(Comment::class, 'parent_comment_id', 'id');
     }
 }
