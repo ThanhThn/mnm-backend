@@ -15,7 +15,6 @@ class HomeController extends Controller
         $offset = $request->input('offset', 0);
         $stories = Story::with('categories')
             ->where('status', 2)
-            ->limit($limit)
             ->offset($offset)
             ->paginate($limit);
         return response()->json([

@@ -5,6 +5,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Front\CategoryController as FrontCategory;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\InteractionController;
@@ -74,9 +75,15 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
 });
 
+// Api Category front-end
+Route::get('categories', [FrontCategory::class, 'categories']);
+// Api stories of category
+Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
+
 /* ---------API Interaction----------- */
 Route::group(['prefix' => 'interaction',], function ($router) {
     Route::group(['middleware' => ['jwt.verify']], function ($router) {
         Route::post('add', [InteractionController::class, 'addInteraction']);
     });
 });
+

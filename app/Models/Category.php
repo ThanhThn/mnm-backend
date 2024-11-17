@@ -35,4 +35,9 @@ class Category extends Model
             }
         });
     }
+
+    public function stories()
+    {
+        return $this->belongsToMany(Story::class, 'novels_categories', 'category_id', 'novel_id');
+    }
 }
