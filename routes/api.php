@@ -78,5 +78,12 @@ Route::group(['prefix' => 'story',], function ($router) {
 Route::group(['prefix' => 'interaction',], function ($router) {
     Route::group(['middleware' => ['jwt.verify']], function ($router) {
         Route::post('add', [InteractionController::class, 'addInteraction']);
+        Route::post('delete', [InteractionController::class, 'deleteInteraction']);
     });
+    Route::post('check', [InteractionController::class, 'checkInteraction']);
+});
+/* ---------API Comment----------- */
+Route::group(['prefix' => 'comment', 'namespace' => 'App\Http\Controllers'], function ($router) {
+    Route::post('add', 'CommentController@addComment')->middleware('jwt.verify');
+    Route::post('list', 'CommentController@listComments');
 });

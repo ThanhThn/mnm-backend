@@ -37,16 +37,27 @@ class InteractionController extends Controller
         ]);
     }
 
-    function deleteInteraction(InteractionDeleteRequest $request, InteractionSupport $support, Helpers $helper){
+    function deleteInteraction(InteractionDeleteRequest $request, InteractionSupport $support){
         $data = $request->only(['object_type', 'object_id', 'interaction_type']);
         $interaction = $support::getInteraction(Auth::user()->id, $data['object_id'], $data['object_type'], $data['interaction_type']);
         if (!$interaction){
-            return $helper::response(JsonResponse::HTTP_NOT_FOUND, 'Interaction not found');
+            return Helpers::response(JsonResponse::HTTP_NOT_FOUND, 'Interaction not found');
         }
         $result = $interaction->delete();
         if (!$result){
-            return $helper::response(JsonResponse::HTTP_BAD_REQUEST, 'Interaction delete failed');
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Interaction delete failed');
         }
-        return $helper::response(JsonResponse::HTTP_OK, 'Interaction delete success');
+        return Helpers::response(JsonResponse::HTTP_OK, 'Interaction delete success');
+    }
+
+    function checkInteraction(InteractionRequest $request, InteractionSupport $support){
+        $data = $request->only(['object_b_type', 'object_b_id', 'interaction_type', 'object_a_type', 'object_a_id']);
+        $interaction = $support::getInteraction(
+            $data['object_a_id'], $data['object_b_id'],
+            $data['object_b_type'], $data['interaction_type'], $data['object_a_type']);
+        if(!$interaction){
+            return Helpers::response(JsonResponse::HTTP_NOT_FOUND, 'Interaction not found', false);
+        }
+        return Helpers::response(JsonResponse::HTTP_OK, 'Interaction check success', true);
     }
 }
