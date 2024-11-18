@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Front\CategoryController as FrontCategory;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\Front\NovelController;
 use App\Http\Controllers\InteractionController;
 /*
 |--------------------------------------------------------------------------
@@ -76,11 +77,6 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
 });
 
-// Api Category front-end
-Route::get('categories', [FrontCategory::class, 'categories']);
-// Api stories of category
-Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
-
 /* ---------API Interaction----------- */
 Route::group(['prefix' => 'interaction',], function ($router) {
     Route::group(['middleware' => ['jwt.verify']], function ($router) {
@@ -107,3 +103,10 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
     Route::get('random', 'AdvertisementController@getAdsRandom');
 });
 
+
+// Api Category front-end
+Route::get('categories', [FrontCategory::class, 'categories']);
+// Api stories of category
+Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
+// Api detail story
+Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
