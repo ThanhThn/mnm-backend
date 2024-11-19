@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Request\Author\AuthorRequest;
 use App\Http\Request\Author\EditAuthorRequest;
 use App\Models\Author;
+use App\Models\Image;
+use App\Support\Image\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -57,8 +59,9 @@ class AuthorController extends Controller
             $request->all(['full_name', 'birth_date', 'profile_picture_id', 'pen_name']),
             fn($value) => !empty($value));
         $author = Author::find($request->id);
-
-
+        if($data['profile_picture_id'] != $author->profile_picture_id){
+            ImageSupport::delete($author->profile_picture_id);
+        }
         $result = $author->update($data);
 
         return response()->json([
@@ -80,6 +83,7 @@ class AuthorController extends Controller
                 ]
             ], JsonResponse::HTTP_OK);
         }
+        ImageSupport::delete($author->profile_picture_id);
         $author->delete();
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
