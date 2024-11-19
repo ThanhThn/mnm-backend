@@ -8,7 +8,7 @@ class UploadRequest extends BaseRequest
 {
     public function rules(){
         return [
-            'file' => 'required|file|mimes:jpeg,jpg,png,gif',
+            'file' => 'required|file|mimes:jpeg,jpg,png,gif,webp',
             'title' => 'required|string',
             'description' => 'nullable|string',
         ];
