@@ -24,7 +24,7 @@ class Author extends Model
     public  $incrementing = false;
 
     protected $casts = [
-        'birth_date' => 'date'
+        'birth_date' => 'date:d/m/Y'
     ];
 
     protected static function boot()
