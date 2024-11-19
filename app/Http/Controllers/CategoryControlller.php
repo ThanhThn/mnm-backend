@@ -17,7 +17,7 @@ class CategoryControlller extends Controller
             'name' => $request->name,
             'slug' => Helpers::createSlug($request->name),
             'description' => $request->description,
-            'active' => $request->active
+            'status' => $request->status
         ]);
         if ($category) {
             return response()->json([
