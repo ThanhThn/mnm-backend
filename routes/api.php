@@ -39,10 +39,6 @@ Route::group([
 });
 Route::get('profile', [AuthController::class, 'profile'])->middleware('jwt.verify');
 
-Route::group(['prefix' => 'image'], function ($router) {
-    Route::post('upload', [ImageController::class, 'upload']);
-});
-
 Route::group(['prefix' => 'author',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [AuthorController::class, 'createAuthor']);
