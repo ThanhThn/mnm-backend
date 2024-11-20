@@ -72,6 +72,7 @@ Route::group(['prefix' => 'story',], function ($router) {
         Route::post('update', [StoryController::class, 'updateStory']);
     });
     Route::get('list', [StoryController::class, 'listStories']);
+    Route::get('detail/{id}', [StoryController::class, 'detailStory']);
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
 });
 
