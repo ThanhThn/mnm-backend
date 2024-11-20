@@ -52,9 +52,10 @@ class CategoryControlller extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
-    public function listCategories()
+    public function listCategories(Request $request)
     {
-        $category = Category::all();
+        $limit = $request->input('limit', 15);
+        $category = Category::paginate($limit);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
