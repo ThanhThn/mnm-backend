@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Http\Request\Author\AuthorRequest;
 use App\Http\Request\Author\EditAuthorRequest;
 use App\Models\Author;
@@ -91,5 +92,12 @@ class AuthorController extends Controller
                 'message' => 'Author deleted'
             ]
         ]);
+    }
+
+    function detailAuthor($id)
+    {
+        $author = Author::with('profilePicture')->find($id);
+        if (!$author) return Helpers::response(JsonResponse::HTTP_NOT_FOUND, "Author not found");
+        return Helpers::response(JsonResponse::HTTP_OK, data: $author);
     }
 }

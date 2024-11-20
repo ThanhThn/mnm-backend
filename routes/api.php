@@ -45,6 +45,7 @@ Route::group(['prefix' => 'author',], function ($router) {
         Route::delete('delete/{id}', [AuthorController::class, 'deleteAuthor']);
         Route::post('update', [AuthorController::class, 'updateAuthor']);
     });
+    Route::get('detail/{id}', [AuthorController::class, 'detailAuthor']);
     Route::get('list', [AuthorController::class, 'listAuthors']);
 });
 
