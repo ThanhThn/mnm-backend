@@ -51,6 +51,7 @@ Route::group(['prefix' => 'author',], function ($router) {
 
 Route::group(['prefix' => 'image'], function ($router) {
     Route::post('upload', [ImageController::class, 'upload'])->middleware('jwt.verify');
+    Route::delete('delete/{id}', [ImageController::class, 'deleteImage'])->middleware(['jwt.verify', 'auth.admin']);
 });
 
 /* --------- API Category ----------- */

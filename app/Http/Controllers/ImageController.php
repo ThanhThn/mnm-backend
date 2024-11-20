@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\S3Utils;
 use App\Http\Request\Image\UploadRequest;
 use App\Models\Image;
+use App\Support\Image\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -37,5 +38,10 @@ class ImageController extends Controller
                 'message' => 'Failed to upload image'
             ]
         ], JsonResponse::HTTP_OK);
+    }
+
+    function deleteImage($id)
+    {
+        ImageSupport::delete($id);
     }
 }

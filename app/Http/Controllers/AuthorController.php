@@ -60,7 +60,7 @@ class AuthorController extends Controller
             $request->all(['full_name', 'birth_date', 'profile_picture_id', 'pen_name']),
             fn($value) => !empty($value));
         $author = Author::find($request->id);
-        if(!empty($data['profile_picture_id']) && $data['profile_picture_id'] != $author->profile_picture_id){
+        if(!empty($data['profile_picture_id']) && $data['profile_picture_id'] != $author->profile_picture_id && $author->profile_picture_id != null){
             ImageSupport::delete($author->profile_picture_id);
         }
         $result = $author->update($data);
