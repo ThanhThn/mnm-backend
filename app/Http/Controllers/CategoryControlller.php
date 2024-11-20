@@ -83,7 +83,7 @@ class CategoryControlller extends Controller
         ], JsonResponse::HTTP_NOT_FOUND);
     }
 
-    public function detailCategory(string $id)
+    public function detailCategory($id)
     {
         $category = Category::find($id);
         if (!$category) return Helpers::response(JsonResponse::HTTP_NOT_FOUND, 'Category not found');
