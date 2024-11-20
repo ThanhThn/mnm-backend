@@ -40,6 +40,11 @@ class Story extends Model
         });
     }
 
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'author_id');
+    }
+
     public function storyPicture()
     {
         return $this->belongsTo(Image::class, 'thumbnail_id');
@@ -50,8 +55,8 @@ class Story extends Model
         return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id')->withPivot('novel_type')->withTimestamps();
     }
 
-    public function getLikesAttribute(){
+    public function getLikesAttribute()
+    {
         return InteractionSupport::countInteraction(1, $this->id, 2);
     }
-
 }

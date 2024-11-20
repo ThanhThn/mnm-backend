@@ -11,7 +11,7 @@ class NovelController extends Controller
 {
     public function detailStory($slugStory)
     {
-        $story = Story::where('slug', $slugStory)->where('status', '!=', 0)->with('categories')->first();
+        $story = Story::where('slug', $slugStory)->where('status', '!=', 0)->with('categories', 'author')->first();
         if (!$story) {
             return response()->json([
                 'status' => JsonResponse::HTTP_NOT_FOUND,

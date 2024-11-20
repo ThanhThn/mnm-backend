@@ -81,9 +81,10 @@ class StoryController extends Controller
         ]);
     }
 
-    public function listStories()
+    public function listStories(Request $request)
     {
-        $stories = Story::with('categories')->get();
+        $limit = $request->input('limit', 15);
+        $stories = Story::with('categories')->paginate($limit);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
