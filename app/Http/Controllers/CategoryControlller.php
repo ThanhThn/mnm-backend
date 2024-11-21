@@ -64,6 +64,17 @@ class CategoryControlller extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
+    public function dataCategories()
+    {
+        $category = Category::get();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $category
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
+
     public function deleteCategory($id)
     {
         $category = Category::find($id);
