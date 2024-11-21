@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Http\Request\Story\CreateStoryRequest;
 use App\Http\Request\Story\EditStoryRequest;
 use App\Models\Story;
+use App\Support\Image\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -96,9 +97,7 @@ class StoryController extends Controller
         $story = Story::find($id);
         if ($story) {
             $story->categories()->detach();
-            if ($story->storyPicture) {
-                $story->storyPicture()->delete();
-            }
+            ImageSupport::delete($story->thumbnail_id);
             $story->delete();
             return response()->json([
                 'status' => JsonResponse::HTTP_OK,
