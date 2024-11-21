@@ -7,7 +7,7 @@ use App\Http\Request\Author\AuthorRequest;
 use App\Http\Request\Author\EditAuthorRequest;
 use App\Models\Author;
 use App\Models\Image;
-use App\Support\Image\ImageSupport;
+use App\Support\File\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\S3Utils;
 use App\Http\Request\Image\UploadRequest;
 use App\Models\Image;
-use App\Support\Image\ImageSupport;
+use App\Support\File\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

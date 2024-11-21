@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Http\Request\Advertisement\AdsRequest;
 use App\Models\Advertisement;
-use App\Support\Image\ImageSupport;
+use App\Support\File\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Image;
+namespace App\Support\File;
 
 use App\Helpers\S3Utils;
 use App\Models\Image;

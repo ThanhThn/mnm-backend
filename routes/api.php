@@ -105,6 +105,9 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
     Route::get('random', 'AdvertisementController@getAdsRandom');
 });
 
+Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], function ($router) {
+    Route::post('upload', 'SoundController@upload');
+});
 
 // Api Category front-end
 Route::get('categories', [FrontCategory::class, 'categories']);

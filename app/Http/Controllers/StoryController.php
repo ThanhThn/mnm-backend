@@ -6,7 +6,7 @@ use App\Helpers\Helpers;
 use App\Http\Request\Story\CreateStoryRequest;
 use App\Http\Request\Story\EditStoryRequest;
 use App\Models\Story;
-use App\Support\Image\ImageSupport;
+use App\Support\File\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
