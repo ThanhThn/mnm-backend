@@ -63,6 +63,7 @@ Route::group(['prefix' => 'category',], function ($router) {
     });
     Route::get('detail/{id}', [CategoryControlller::class, 'detailCategory']);
     Route::get('list', [CategoryControlller::class, 'listCategories']);
+    Route::get('data', [CategoryControlller::class, 'dataCategories']);
 });
 
 /* --------- API Story ----------- */
