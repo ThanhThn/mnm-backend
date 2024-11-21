@@ -20,7 +20,7 @@ class Helpers
         return $slug;
     }
 
-    public static function response($status, $message = '', $data = null)
+    public static function response($status, $message = '', $data = null, array $options = [])
     {
         $response = [
             'status' => $status,
@@ -33,6 +33,10 @@ class Helpers
         }
         if (!empty($data)) {
             $response['body']['data'] =  $data;
+        }
+
+        foreach ($options as $option => $value) {
+            $response['body'][$option] = $value;
         }
         return response()->json($response, JsonResponse::HTTP_OK);
     }

@@ -19,7 +19,8 @@ class S3Utils
 
     static function delete($filePath)
     {
-        // Xóa file khỏi Amazon S3
-        return Storage::disk('s3')->delete($filePath);
+        $key = parse_url($filePath, PHP_URL_PATH);
+        $key = ltrim($key, '/');
+        return Storage::disk('s3')->delete($key);
     }
 }

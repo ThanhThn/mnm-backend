@@ -51,6 +51,7 @@ Route::group(['prefix' => 'author',], function ($router) {
 
 Route::group(['prefix' => 'image'], function ($router) {
     Route::post('upload', [ImageController::class, 'upload'])->middleware('jwt.verify');
+    Route::delete('delete/{id}', [ImageController::class, 'deleteImage'])->middleware(['jwt.verify', 'auth.admin']);
 });
 
 /* --------- API Category ----------- */
@@ -99,6 +100,7 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
         Route::post('update', [AdvertisementController::class, 'updateAds']);
         Route::post('list', 'AdvertisementController@listAds');
     });
+    Route::get('detail/{id}', [AdvertisementController::class, 'detailAds']);
     Route::get('random', 'AdvertisementController@getAdsRandom');
 });
 
