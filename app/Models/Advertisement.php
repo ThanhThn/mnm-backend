@@ -15,6 +15,9 @@ class Advertisement extends Model
         'link',
         'picture_id'
     ];
+    protected $casts = [
+      'created_at' => 'datetime:H:i:s d/m/Y',
+    ];
 
     protected $primaryKey = 'id';
     public $incrementing = false;

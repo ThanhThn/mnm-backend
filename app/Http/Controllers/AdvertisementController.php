@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Http\Request\Advertisement\AdsRequest;
 use App\Models\Advertisement;
+use App\Support\Image\ImageSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -31,7 +32,17 @@ class AdvertisementController extends Controller
     }
 
     public function deleteAds($id){
-        $result = Advertisement::destroy($id);
+        $ads = Advertisement::find($id);
+        if(!$ads){
+            return response()->json([
+                'status' => JsonResponse::HTTP_BAD_REQUEST,
+                'body' => [
+                    'message' => 'Cannot find advertisement'
+                ]
+            ], JsonResponse::HTTP_OK);
+        }
+        ImageSupport::delete($ads->picture_id);
+        $result = $ads->delete();
         if ($result){
             return Helpers::response(JsonResponse::HTTP_OK, 'Deleted Advertisement Successfully');
         }
