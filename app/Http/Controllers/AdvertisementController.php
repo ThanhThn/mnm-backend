@@ -30,7 +30,7 @@ class AdvertisementController extends Controller
         }
 
         if($data['picture_id'] != $ads->picture_id && $ads->picture_id != null){
-            ImageSupport::delete($adsId->picture_id);
+            ImageSupport::delete($ads->picture_id);
         }
 
         $result = $ads->update($data);
