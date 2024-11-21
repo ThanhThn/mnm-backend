@@ -100,6 +100,7 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
         Route::post('update', [AdvertisementController::class, 'updateAds']);
         Route::post('list', 'AdvertisementController@listAds');
     });
+    Route::get('detail/{id}', [AdvertisementController::class, 'detailAds']);
     Route::get('random', 'AdvertisementController@getAdsRandom');
 });
 
