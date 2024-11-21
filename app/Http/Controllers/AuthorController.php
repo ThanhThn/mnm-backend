@@ -84,7 +84,9 @@ class AuthorController extends Controller
                 ]
             ], JsonResponse::HTTP_OK);
         }
-        ImageSupport::delete($author->profile_picture_id);
+        if($author->profile_picture_id != null){
+            ImageSupport::delete($author->profile_picture_id);
+        }
         $author->delete();
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
