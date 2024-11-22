@@ -77,12 +77,14 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('list', [StoryController::class, 'listStories']);
     Route::get('detail/{id}', [StoryController::class, 'detailStory']);
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
+    Route::get('data', [StoryController::class, 'dataStories']);
 });
 
 
 Route::group(['prefix' => 'chapter',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [ChapterController::class, 'createChapter']);
+        Route::post('update', [ChapterController::class, 'updateChapter']);
     });
     Route::get('list', [ChapterController::class, 'listChapters']);
     Route::get('detail/{id}', [ChapterController::class, 'detailChapter']);

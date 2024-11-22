@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Http\Request\Chapter\CreateChapterRequest;
+use App\Http\Request\Chapter\EditChapterRequest;
 use App\Http\Request\Chapter\ListChapterRequest;
 use App\Models\Chapter;
 use Illuminate\Http\JsonResponse;
@@ -52,6 +53,33 @@ class ChapterController extends Controller
                 'data' => $chapters
             ]
         ], JsonResponse::HTTP_OK);
+    }
+
+    public function updateChapter(EditChapterRequest $request)
+    {
+        $chapter = Chapter::find($request->id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Chapter not found'
+                ]
+            ]);
+        }
+        $chapter->update([
+            'title' => $request->title,
+            'slug' => Helpers::createSlug($request->title),
+            'content' => $request->content,
+            'status' => $request->status,
+            'story_id' => $request->story_id
+        ]);
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Chapter updated successfully',
+                'data' => $chapter->load('story')
+            ]
+        ]);
     }
 
     public function detailChapter($id)
