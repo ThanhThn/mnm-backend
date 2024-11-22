@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Http\Request\Chapter\CreateChapterRequest;
+use App\Http\Request\Chapter\ListChapterRequest;
 use App\Jobs\UploadSound;
 use App\Models\Chapter;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +36,44 @@ class ChapterController extends Controller
             'body' => [
                 'message' => 'Created Chapter Successfully',
                 'data' => $chapter->load('story')
+            ]
+        ]);
+    }
+
+    public function listChapters(ListChapterRequest $request)
+    {
+        $limit = $request['limit'] ?? 15;
+        $storyId = $request['story_id'] ?? null;
+        if ($storyId) {
+            $chapters = Chapter::where('story_id', $storyId)
+                ->orderByDesc('created_at')
+                ->paginate($limit);
+        } else {
+            $chapters = Chapter::orderByDesc('created_at')->paginate($limit);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $chapters
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
+
+    public function detailChapter($id)
+    {
+        $chapter = Chapter::find($id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Chapter not found'
+                ]
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $chapter
             ]
         ]);
     }

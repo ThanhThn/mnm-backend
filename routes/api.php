@@ -85,6 +85,8 @@ Route::group(['prefix' => 'chapter',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [ChapterController::class, 'createChapter']);
     });
+    Route::get('list', [ChapterController::class, 'listChapters']);
+    Route::get('detail/{id}', [ChapterController::class, 'detailChapter']);
 });
 
 /* ---------API Interaction----------- */

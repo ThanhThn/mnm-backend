@@ -13,14 +13,12 @@ class LogSearchQuery implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $query;
-    public $type;
     /**
      * Create a new job instance.
      */
-    public function __construct($query, $type)
+    public function __construct($query)
     {
         $this->query = $query;
-        $this->type = $type;
     }
 
     /**
@@ -28,9 +26,8 @@ class LogSearchQuery implements ShouldQueue
      */
     public function handle()
     {
-        SearchLog::create([
-            'query' => $this->query,
-            'type' => $this->type,
-        ]);
+        // SearchLog::create([
+        //     'query' => $this->query
+        // ]);
     }
 }

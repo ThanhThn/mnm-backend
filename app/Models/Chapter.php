@@ -21,7 +21,9 @@ class Chapter extends Model
         'status',
     ];
     protected $primaryKey = "id";
+    protected $hidden = ['story_id'];
     public $incrementing = false;
+
 
     protected static function boot()
     {

@@ -21,6 +21,10 @@ class Story extends Model
         'thumbnail_id',
         'status',
     ];
+    protected $hidden = [
+        'author_id',
+        'thumbnail_id'
+    ];
     protected $appends = [
         'likes'
     ];
@@ -37,6 +41,7 @@ class Story extends Model
         });
         static::addGlobalScope(function (Builder $builder) {
             $builder->with('storyPicture');
+            $builder->with('author');
         });
     }
 

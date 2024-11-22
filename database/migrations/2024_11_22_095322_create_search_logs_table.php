@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('search_logs', function (Blueprint $table) {
             $table->id();
             $table->string('query');
-            $table->string('type');
             $table->timestamps();
         });
     }

@@ -33,7 +33,7 @@ class StoryController extends Controller
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
                     'message' => 'Story successfully created',
-                    'data' => $story->load('categories', 'storyPicture')
+                    'data' => $story->load('categories', 'storyPicture', 'author')
                 ]
             ], JsonResponse::HTTP_OK);
         }
@@ -84,7 +84,7 @@ class StoryController extends Controller
     public function listStories(Request $request)
     {
         $limit = $request->input('limit', 15);
-        $stories = Story::with('categories', 'author')->paginate($limit);
+        $stories = Story::with('categories')->paginate($limit);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
@@ -117,7 +117,7 @@ class StoryController extends Controller
 
     public function detailStory($id)
     {
-        $story = Story::with('storyPicture', 'categories')->find($id);
+        $story = Story::with('categories')->find($id);
         if (!$story) return Helpers::response(JsonResponse::HTTP_NOT_FOUND, 'Story not found');
         return Helpers::response(JsonResponse::HTTP_OK, data: $story);
     }
