@@ -6,6 +6,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\Front\CategoryController as FrontCategory;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
@@ -78,6 +79,13 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
 });
 
+
+Route::group(['prefix' => 'chapter',], function ($router) {
+    Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
+        Route::post('create', [ChapterController::class, 'createChapter']);
+    });
+});
+
 /* ---------API Interaction----------- */
 Route::group(['prefix' => 'interaction',], function ($router) {
     Route::group(['middleware' => ['jwt.verify']], function ($router) {
@@ -115,3 +123,4 @@ Route::get('categories', [FrontCategory::class, 'categories']);
 Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
 // Api detail story
 Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
+Route::get('search', [HomeController::class, 'search']);
