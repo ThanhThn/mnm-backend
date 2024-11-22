@@ -17,7 +17,7 @@ class Chapter extends Model
         'slug',
         'content',
         'story_id',
-        'sound_id',
+        'sound',
         'status',
     ];
     protected $primaryKey = "id";
