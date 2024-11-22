@@ -46,10 +46,6 @@ class S3Utils
      */
     public function getObjectUrlFromS3(string|array $pathFile): string|array
     {
-        $initial = [
-            'status' => true,
-            'filePath' => null
-        ];
         if (empty($pathFile)) {
             return '';
         }

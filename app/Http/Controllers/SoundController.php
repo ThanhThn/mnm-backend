@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Helpers\S3Utils;
 use App\Http\Request\Image\UploadRequest;
 use App\Models\Image;
@@ -37,5 +38,10 @@ class SoundController extends Controller
                 'path' => $path
             ]
         ], JsonResponse::HTTP_OK);
+    }
+    function delete(Request $request, S3Utils $utils)
+    {
+        $utils::delete($request->input('path'));
+        return Helpers::response(JsonResponse::HTTP_OK, "Delete success");
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\SoundController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChapterController;
@@ -117,6 +118,7 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
 
 Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], function ($router) {
     Route::post('upload', 'SoundController@upload');
+    Route::post('delete', [SoundController::class, 'delete']);
 });
 
 // Api Category front-end
