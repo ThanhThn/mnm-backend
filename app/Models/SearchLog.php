@@ -11,7 +11,5 @@ class SearchLog extends Model
 
     protected $fillable = [
         'query',
-        'type',
-        'user_id',
     ];
 }
