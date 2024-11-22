@@ -55,4 +55,25 @@ class HomeController extends Controller
             ]
         ]);
     }
+
+    public function latestStories()
+    {
+        $stories = Story::whereHas('chapters')
+            ->with(['chapters' => function ($query) {
+                $query->orderByDesc('created_at');
+            }])
+            ->get()
+            ->map(function ($story) {
+                $story->chapter = $story->chapters->first();
+                unset($story->chapters);
+                return $story;
+            });
+
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $stories
+            ]
+        ]);
+    }
 }

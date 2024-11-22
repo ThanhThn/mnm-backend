@@ -86,6 +86,7 @@ Route::group(['prefix' => 'chapter',], function ($router) {
     Route::group(['middleware' => ['jwt.verify', 'auth.admin']], function ($router) {
         Route::post('create', [ChapterController::class, 'createChapter']);
         Route::post('update', [ChapterController::class, 'updateChapter']);
+        Route::delete('delete/{id}', [ChapterController::class, 'deleteChapter']);
     });
     Route::get('list', [ChapterController::class, 'listChapters']);
     Route::get('detail/{id}', [ChapterController::class, 'detailChapter']);
@@ -128,5 +129,6 @@ Route::get('categories', [FrontCategory::class, 'categories']);
 // Api stories of category
 Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
 // Api detail story
+Route::get('story/latest', [HomeController::class, 'latestStories']);
 Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
 Route::get('search', [HomeController::class, 'search']);

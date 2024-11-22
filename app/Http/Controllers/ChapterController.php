@@ -21,7 +21,7 @@ class ChapterController extends Controller
             // 'sound' => $request->sound
         ]));
 
-        if($request->sound && !empty($request->sound)) {
+        if ($request->sound && !empty($request->sound)) {
             UploadSound::dispatch($request->sound, $chapter->id);
         }
         if (!$chapter) {
@@ -55,7 +55,7 @@ class ChapterController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapters
+                'data' => $chapters->load('story')
             ]
         ], JsonResponse::HTTP_OK);
     }
@@ -87,6 +87,26 @@ class ChapterController extends Controller
         ]);
     }
 
+    public function deleteChapter($id)
+    {
+        $chapter = Chapter::find($id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Chapter not found'
+                ]
+            ]);
+        }
+        $chapter->delete();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Chapter deleted successfully'
+            ]
+        ]);
+    }
+
     public function detailChapter($id)
     {
         $chapter = Chapter::find($id);
@@ -101,7 +121,7 @@ class ChapterController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapter
+                'data' => $chapter->load('story')
             ]
         ]);
     }
