@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug', 100);
             $table->longText('content');
             $table->uuid('story_id');
-            $table->string('sound')->nullable();
+            $table->string('sound_id')->nullable();
             $table->integer('status');
             $table->timestamps();
         });
