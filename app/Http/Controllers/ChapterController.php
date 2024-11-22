@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Http\Request\Chapter\CreateChapterRequest;
 use App\Http\Request\Chapter\EditChapterRequest;
 use App\Http\Request\Chapter\ListChapterRequest;
+use App\Jobs\UploadSound;
 use App\Models\Chapter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,10 @@ class ChapterController extends Controller
             'slug' => Helpers::createSlug($request->title),
             // 'sound' => $request->sound
         ]));
+
+        if($request->sound && !empty($request->sound)) {
+            UploadSound::dispatch($request->sound, $chapter->id);
+        }
         if (!$chapter) {
             return response()->json([
                 'status' => JsonResponse::HTTP_BAD_REQUEST,
