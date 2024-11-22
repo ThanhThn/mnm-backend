@@ -26,8 +26,8 @@ class LogSearchQuery implements ShouldQueue
      */
     public function handle()
     {
-        SearchLog::create([
-            'query' => $this->query
-        ]);
+        // SearchLog::create([
+        //     'query' => $this->query
+        // ]);
     }
 }
