@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Jobs\LogSearchQuery;
 use App\Models\Author;
+use App\Models\Category;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -70,6 +71,30 @@ class HomeController extends Controller
                 return $story;
             });
 
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $stories
+            ]
+        ]);
+    }
+
+    public function hotStories($slugCategory = null)
+    {
+        if ($slugCategory) {
+            $category = Category::where('slug', $slugCategory)->where('status', 1)->first();
+            if (!$category) {
+                return response()->json([
+                    'status' => JsonResponse::HTTP_NOT_FOUND,
+                    'body' => [
+                        'message' => 'Category not found'
+                    ]
+                ], JsonResponse::HTTP_NOT_FOUND);
+            }
+            $stories = $category->stories()->where('status', '!=', 0)->orderByDesc('views')->limit(16)->get();
+        } else {
+            $stories = Story::where('status', '!=', 0)->orderByDesc('views')->limit(16)->get();
+        }
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [

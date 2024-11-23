@@ -131,4 +131,5 @@ Route::get('story/latest', [HomeController::class, 'latestStories']);
 Route::get('story/{slugStory}/chapters', [NovelController::class, 'chaptersOfTheStory']);
 Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
 Route::get('search', [HomeController::class, 'search']);
+Route::get('/hot-stories/{slugCategory?}', [HomeController::class, 'hotStories']);
 Route::get('/{slugStory}/{slugChapter}', [NovelController::class, 'detailChapter']);
