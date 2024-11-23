@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $data = $request->all();
         $partnerCode = $data["partnerCode"];
-        $accessKey = $data["accessKey"];
+        $accessKey = env("MOMO_ACCESS_KEY");
         $serectkey = env("MOMO_SECRET_KEY");
         $orderId = $data["orderId"];
         $localMessage = $data["localMessage"];
