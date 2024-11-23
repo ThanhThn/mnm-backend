@@ -39,9 +39,11 @@ class UserController extends Controller
         $rawHash = "partnerCode=" . $partnerCode . "&requestId=" . $requestId . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
             "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&responseTime=" . $responseTime . "&resultCode=" . $resultCode .
             "&payType=" . $payType . "&extraData=" . $extraData;
+        Log::info($rawHash);
 
         $partnerSignature = hash_hmac("sha256", $rawHash, $serectkey);
 
+        Log::info($partnerSignature);
         if ($m2signature != $partnerSignature){
             Log::error("Can not update role of user");
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Can not update role of user');
