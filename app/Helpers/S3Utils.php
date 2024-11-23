@@ -26,15 +26,11 @@ class S3Utils
         return Storage::disk('s3')->delete($key);
     }
 
-    public function uploadLargeFile(string $store, UploadedFile $file)
+    public function uploadLargeFile(string $store, $file, $fileName, $extension)
     {
-        $originalName = $file->getClientOriginalName();
-        $fileName = pathinfo($originalName, PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-
         $fileName = time() . '_' . $fileName . '.' . $extension;
         $path = $store .  '/' . $fileName;
-        Storage::disk('s3')->put($path, file_get_contents($file), 's3');
+        Storage::disk('s3')->put($path, $file , 's3');
         return $this->getObjectUrlFromS3($path);
     }
 

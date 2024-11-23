@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Helpers
 {
@@ -39,5 +40,15 @@ class Helpers
             $response['body'][$option] = $value;
         }
         return response()->json($response, JsonResponse::HTTP_OK);
+    }
+
+    public static function getFileNameAnExtension (UploadedFile $file){
+        $originalName = $file->getClientOriginalName();
+        $fileName = pathinfo($originalName, PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        return [
+            'extension' => $extension,
+            'name' => $fileName
+        ];
     }
 }

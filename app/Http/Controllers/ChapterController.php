@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
+use App\Helpers\S3Utils;
 use App\Http\Request\Chapter\CreateChapterRequest;
 use App\Http\Request\Chapter\EditChapterRequest;
 use App\Http\Request\Chapter\ListChapterRequest;
@@ -22,7 +23,11 @@ class ChapterController extends Controller
         ]));
 
         if ($request->sound && !empty($request->sound)) {
-            UploadSound::dispatch($request->sound, $chapter->id);
+            $file =  $request -> file('sound');
+            $path = $file->store('temp');
+
+            $inforFile = Helpers::getFileNameAnExtension($file);
+            UploadSound::dispatch($path, $chapter->id, $inforFile['name'], $inforFile['extension']);
         }
         if (!$chapter) {
             return response()->json([
@@ -60,23 +65,27 @@ class ChapterController extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
-    public function updateChapter(EditChapterRequest $request)
+    public function updateChapter(EditChapterRequest $request, S3Utils $utils)
     {
-        $chapter = Chapter::find($request->id);
-        if (!$chapter) {
-            return response()->json([
-                'status' => JsonResponse::HTTP_NOT_FOUND,
-                'body' => [
-                    'message' => 'Chapter not found'
-                ]
-            ]);
+        $data = $request->only(['id', 'title', 'story_id', 'content', 'status', 'sound']);
+        $chapter = Chapter::find($data['id']);
+
+        if(!empty($data['sound']) && $chapter->sound)  {
+            $utils::delete($chapter->sound);
+
+            $file =  $request -> file('sound');
+            $path = $file->store('temp');
+
+            $inforFile = Helpers::getFileNameAnExtension($file);
+            UploadSound::dispatch($path, $chapter->id, $inforFile['name'], $inforFile['extension']);
         }
+
         $chapter->update([
-            'title' => $request->title,
-            'slug' => Helpers::createSlug($request->title),
-            'content' => $request->content,
-            'status' => $request->status,
-            'story_id' => $request->story_id
+            'title' => $data['title'],
+            'slug' => Helpers::createSlug($data['title']),
+            'content' => $data['content'],
+            'status' => $data['status'],
+            'story_id' => $data['story_id'],
         ]);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
@@ -87,7 +96,7 @@ class ChapterController extends Controller
         ]);
     }
 
-    public function deleteChapter($id)
+    public function deleteChapter($id, S3Utils $utils)
     {
         $chapter = Chapter::find($id);
         if (!$chapter) {
@@ -98,7 +107,15 @@ class ChapterController extends Controller
                 ]
             ]);
         }
-        $chapter->delete();
+
+        if ($chapter->sound) {
+            $utils::delete($chapter->sound);
+        }
+
+        $result = $chapter->delete();
+        if(!$result){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Could not delete chapter');
+        }
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
