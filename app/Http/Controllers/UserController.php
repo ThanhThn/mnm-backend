@@ -14,7 +14,8 @@ class UserController extends Controller
     function updateUser(Request $request)
     {
         $data = $request->all();
-        $partnerCode = $data["partnerCode"];
+        Log::info($data);
+        $partnerCode = env("MOMO_PARTNER_CODE");
         $accessKey = env("MOMO_ACCESS_KEY");
         $serectkey = env("MOMO_SECRET_KEY");
         $orderId = $data["orderId"];
