@@ -14,6 +14,7 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\Front\NovelController;
 use App\Http\Controllers\InteractionController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +34,7 @@ Route::group([
     Route::group(['prefix' => 'user'], function ($router) {
         Route::post('register', [AuthController::class, 'registerUser']);
         Route::post('login', [AuthController::class, 'loginUser']);
+        Route::post('update_role', [UserController::class, 'updateUser']);
     });
 
     #Admin
