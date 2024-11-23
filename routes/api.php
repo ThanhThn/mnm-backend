@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\CategoryControlller;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SoundController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -90,6 +91,7 @@ Route::group(['prefix' => 'chapter',], function ($router) {
     });
     Route::get('list', [ChapterController::class, 'listChapters']);
     Route::get('detail/{id}', [ChapterController::class, 'detailChapter']);
+    Route::get('detail/{slugStory}/{slugChapter}', [NovelController::class, 'detailChapter']);
 });
 
 /* ---------API Interaction----------- */
@@ -132,4 +134,7 @@ Route::get('story/{slugStory}/chapters', [NovelController::class, 'chaptersOfThe
 Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
 Route::get('search', [HomeController::class, 'search']);
 Route::get('/hot-stories/{slugCategory?}', [HomeController::class, 'hotStories']);
-Route::get('/{slugStory}/{slugChapter}', [NovelController::class, 'detailChapter']);
+
+Route::group(['prefix' => 'payment'], function ($router) {
+    Route::post('create', [PaymentController::class, 'createPayment']) ->middleware('jwt.verify');
+});
