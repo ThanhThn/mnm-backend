@@ -23,7 +23,7 @@ class UserController extends Controller
         $transId = $data["transId"];
         $orderInfo = $data["orderInfo"];
         $amount = $data["amount"];
-        $errorCode = $data["errorCode"];
+        $resultCode = $data["resultCode"];
         $responseTime = $data["responseTime"];
         $requestId = $data["requestId"];
         $payType = $data["payType"];
@@ -35,7 +35,7 @@ class UserController extends Controller
 //        "&localMessage=" . $localMessage .
         //Checksum
         $rawHash = "partnerCode=" . $partnerCode . "&accessKey=" . $accessKey . "&requestId=" . $requestId . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
-            "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&responseTime=" . $responseTime . "&errorCode=" . $errorCode .
+            "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&responseTime=" . $responseTime . "&resultCode=" . $resultCode .
             "&payType=" . $payType . "&extraData=" . $extraData;
 
         $partnerSignature = hash_hmac("sha256", $rawHash, $serectkey);
