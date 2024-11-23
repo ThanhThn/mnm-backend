@@ -45,6 +45,7 @@ class PaymentController extends Controller
             'signature' => $signature);
         $result = Helpers::execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);
+        $jsonResult['ipnUrl'] = $ipnUrl;
 
         Payment::create([
             'user_id' => Auth::user()->id,
