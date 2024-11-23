@@ -21,7 +21,7 @@ class ChapterController extends Controller
 
         $chapter = Chapter::create(array_merge($data, [
             'slug' => Helpers::createSlug($request->title),
-            'processing' => empty($request->sound)
+            'processing' => !empty($request->sound)
         ]));
 
         if ($request->sound && !empty($request->sound)) {
