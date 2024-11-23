@@ -41,7 +41,7 @@ class HomeController extends Controller
         }
         LogSearchQuery::dispatch($query);
         $storyResults = [];
-        $storyResults = Story::where('name', 'LIKE', "%{$query}%")
+        $storyResults = Story::where('name', 'LIKE', "%{$query}%")->where('status', '!=', 0)
             ->orWhereHas('author', function ($queryBuilder) use ($query) {
                 $queryBuilder->where('full_name', 'LIKE', "%{$query}%")
                     ->orWhere('pen_name', 'LIKE', "%{$query}%");
@@ -58,7 +58,7 @@ class HomeController extends Controller
 
     public function latestStories()
     {
-        $stories = Story::whereHas('chapters')
+        $stories = Story::where('status', '!=', 0)->whereHas('chapters')
             ->with(['chapters' => function ($query) {
                 $query->orderByDesc('created_at');
             }])

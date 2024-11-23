@@ -31,7 +31,7 @@ class NovelController extends Controller
 
     public function detailChapter($slugStory, $slugChapter)
     {
-        $chapter = Chapter::where('slug', $slugChapter)
+        $chapter = Chapter::where('slug', $slugChapter)->where('status', 1)
             ->whereHas('story', function ($query) use ($slugStory) {
                 $query->where('slug', $slugStory);
             })
