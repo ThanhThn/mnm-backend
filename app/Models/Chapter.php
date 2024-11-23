@@ -21,7 +21,6 @@ class Chapter extends Model
         'status',
     ];
     protected $primaryKey = "id";
-    protected $hidden = ['story_id'];
     public $incrementing = false;
 
 
@@ -32,9 +31,6 @@ class Chapter extends Model
             if (empty($query->id)) {
                 $query->id = (string) Str::uuid();
             }
-        });
-        static::addGlobalScope(function (Builder $builder) {
-            $builder->with('story');
         });
     }
 

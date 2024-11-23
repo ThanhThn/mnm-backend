@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Http\Request\Chapter\CreateChapterRequest;
+use App\Http\Request\Chapter\EditChapterRequest;
 use App\Http\Request\Chapter\ListChapterRequest;
 use App\Jobs\UploadSound;
 use App\Models\Chapter;
@@ -20,7 +21,7 @@ class ChapterController extends Controller
             // 'sound' => $request->sound
         ]));
 
-        if($request->sound && !empty($request->sound)) {
+        if ($request->sound && !empty($request->sound)) {
             UploadSound::dispatch($request->sound, $chapter->id);
         }
         if (!$chapter) {
@@ -54,9 +55,56 @@ class ChapterController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapters
+                'data' => $chapters->load('story')
             ]
         ], JsonResponse::HTTP_OK);
+    }
+
+    public function updateChapter(EditChapterRequest $request)
+    {
+        $chapter = Chapter::find($request->id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Chapter not found'
+                ]
+            ]);
+        }
+        $chapter->update([
+            'title' => $request->title,
+            'slug' => Helpers::createSlug($request->title),
+            'content' => $request->content,
+            'status' => $request->status,
+            'story_id' => $request->story_id
+        ]);
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Chapter updated successfully',
+                'data' => $chapter->load('story')
+            ]
+        ]);
+    }
+
+    public function deleteChapter($id)
+    {
+        $chapter = Chapter::find($id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Chapter not found'
+                ]
+            ]);
+        }
+        $chapter->delete();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Chapter deleted successfully'
+            ]
+        ]);
     }
 
     public function detailChapter($id)
@@ -73,7 +121,7 @@ class ChapterController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapter
+                'data' => $chapter->load('story')
             ]
         ]);
     }

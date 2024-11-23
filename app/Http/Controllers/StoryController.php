@@ -93,6 +93,17 @@ class StoryController extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
+    public function dataStories()
+    {
+        $stories = Story::all();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $stories
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
+
     public function deleteStory($id)
     {
         $story = Story::find($id);

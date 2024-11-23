@@ -60,6 +60,11 @@ class Story extends Model
         return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id')->withPivot('novel_type')->withTimestamps();
     }
 
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class, 'story_id');
+    }
+
     public function getLikesAttribute()
     {
         return InteractionSupport::countInteraction(1, $this->id, 2);
