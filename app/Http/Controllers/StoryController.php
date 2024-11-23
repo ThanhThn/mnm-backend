@@ -49,7 +49,12 @@ class StoryController extends Controller
 
     public function updateStory(EditStoryRequest $request)
     {
-        $story = Story::find($request->id);
+        $data = $request->only( 'id','name', 'description', 'author_id', 'thumbnail_id', 'status','category_ids');
+        $story = Story::find($data['id']);
+
+        if($data['thumbnail_id'] != $story->thumbnail_id && $story->thumbnail_id != null){
+            ImageSupport::delete($story->thumbnail_id);
+        }
         $story->update([
             'name' => $request->name,
             'slug' => Helpers::createSlug($request->name),
@@ -58,25 +63,18 @@ class StoryController extends Controller
             'thumbnail_id' => $request->thumbnail_id,
             'status' => $request->status
         ]);
-        if ($story) {
-            $categoryData = [];
-            foreach ($request->category_ids as $category) {
-                $categoryData[$category] = ['novel_type' => 'story'];
-            }
-            $story->categories()->sync($categoryData);
 
-            return response()->json([
-                'status' => JsonResponse::HTTP_OK,
-                'body' => [
-                    'message' => 'Story successfully updated',
-                    'data' => $story->load('categories')
-                ]
-            ]);
+        $categoryData = [];
+        foreach ($request->category_ids as $category) {
+            $categoryData[$category] = ['novel_type' => 'story'];
         }
+        $story->categories()->sync($categoryData);
+
         return response()->json([
-            'status' => JsonResponse::HTTP_BAD_REQUEST,
+            'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'message' => 'Failed to update story'
+                'message' => 'Story successfully updated',
+                'data' => $story->load('categories')
             ]
         ]);
     }
@@ -108,8 +106,9 @@ class StoryController extends Controller
     {
         $story = Story::find($id);
         if ($story) {
-            $story->categories()->detach();
             ImageSupport::delete($story->thumbnail_id);
+
+            $story->categories()->detach();
             $story->delete();
             return response()->json([
                 'status' => JsonResponse::HTTP_OK,

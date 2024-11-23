@@ -17,7 +17,7 @@ class EditStoryRequest extends BaseRequest
             'status' => 'required|integer',
             'author_id' => 'required|uuid|exists:authors,id',
             'category_ids' => 'required|array',
-            'category_ids.*' => 'uuid|exists:categories,id',
+            'category_ids.*' => 'uuid|distinct|exists:categories,id',
             'thumbnail_id' => 'required|uuid|exists:images,id|unique:stories,thumbnail_id,' . $this->id,
         ];
     }
