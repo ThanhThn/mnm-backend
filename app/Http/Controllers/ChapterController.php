@@ -46,16 +46,16 @@ class ChapterController extends Controller
         $limit = $request['limit'] ?? 15;
         $storyId = $request['story_id'] ?? null;
         if ($storyId) {
-            $chapters = Chapter::where('story_id', $storyId)
+            $chapters = Chapter::with('story')->where('story_id', $storyId)
                 ->orderByDesc('created_at')
                 ->paginate($limit);
         } else {
-            $chapters = Chapter::orderByDesc('created_at')->paginate($limit);
+            $chapters = Chapter::with('story')->orderByDesc('created_at')->paginate($limit);
         }
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapters->load('story')
+                'data' => $chapters
             ]
         ], JsonResponse::HTTP_OK);
     }
