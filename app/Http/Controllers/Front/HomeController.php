@@ -29,7 +29,7 @@ class HomeController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('keyword');
+        $query = $request->input('q');
 
         if (!$query) {
             return response()->json([
@@ -39,18 +39,20 @@ class HomeController extends Controller
                 ]
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
-        $storyResults = [];
-        $storyResults = Story::where('name', 'LIKE', "%{$query}%")->where('status', '!=', 0)
-            ->orWhereHas('author', function ($queryBuilder) use ($query) {
-                $queryBuilder->where('full_name', 'LIKE', "%{$query}%")
-                    ->orWhere('pen_name', 'LIKE', "%{$query}%");
-            })
+        $result = [];
+        $storyResults = Story::where('name', 'LIKE', "%{$query}%")
+            ->where('status', '!=', 0)->get();
+
+        $authorResult = Author::where('full_name', 'LIKE', "%{$query}%")
+            ->orWhere('pen_name', 'LIKE',"%{$query}%")
             ->get();
+        $result['authors'] = $authorResult;
+        $result['stories'] = $storyResults;
 
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $storyResults
+                'data' => $result
             ]
         ]);
     }
