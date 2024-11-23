@@ -34,7 +34,6 @@ Route::group([
     Route::group(['prefix' => 'user'], function ($router) {
         Route::post('register', [AuthController::class, 'registerUser']);
         Route::post('login', [AuthController::class, 'loginUser']);
-        Route::post('update_role', [UserController::class, 'updateUser']);
     });
 
     #Admin
@@ -42,6 +41,7 @@ Route::group([
         Route::post('/login', [AuthController::class, 'loginAdmin']);
     });
 });
+Route::post('user/update_role', [UserController::class, 'updateUser']);
 Route::get('profile', [AuthController::class, 'profile'])->middleware('jwt.verify');
 
 Route::group(['prefix' => 'author',], function ($router) {
