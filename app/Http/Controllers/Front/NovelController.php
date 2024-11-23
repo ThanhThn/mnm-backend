@@ -67,10 +67,22 @@ class NovelController extends Controller
             ], JsonResponse::HTTP_NOT_FOUND);
         }
 
+        $previousChapter = Chapter::where('story_id', $chapter->story_id)
+            ->where('created_at', '<', $chapter->created_at)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $nextChapter = Chapter::where('story_id', $chapter->story_id)
+            ->where('created_at', '>', $chapter->created_at)
+            ->orderBy('created_at', 'asc')
+            ->first();
+
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $chapter
+                'data' => $chapter,
+                'previous_chapter' => $previousChapter,
+                'next_chapter' => $nextChapter,
             ]
         ]);
     }

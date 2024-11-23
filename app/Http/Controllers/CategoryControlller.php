@@ -55,7 +55,7 @@ class CategoryControlller extends Controller
     public function listCategories(Request $request)
     {
         $limit = $request->input('limit', 15);
-        $category = Category::paginate($limit);
+        $category = Category::orderByDesc('created_at')->paginate($limit);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
@@ -66,7 +66,7 @@ class CategoryControlller extends Controller
 
     public function dataCategories()
     {
-        $category = Category::get();
+        $category = Category::orderByDesc('created_at')->get();
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
