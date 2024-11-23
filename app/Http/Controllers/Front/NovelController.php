@@ -12,7 +12,14 @@ class NovelController extends Controller
 {
     public function detailStory($slugStory)
     {
-        $story = Story::where('slug', $slugStory)->where('status', '!=', 0)->with('categories', 'chapters')->first();
+        $story = Story::where('slug', $slugStory)
+            ->where('status', '!=', 0)
+            ->with([
+                'categories',
+                'chapters' => function ($query) {
+                    $query->where('status', 1);
+                }
+            ])->first();
         if (!$story) {
             return response()->json([
                 'status' => JsonResponse::HTTP_NOT_FOUND,
@@ -27,6 +34,19 @@ class NovelController extends Controller
                 'data' => $story
             ]
         ], JsonResponse::HTTP_OK);
+    }
+
+    public function chaptersOfTheStory($slugStory)
+    {
+        $chapters = Chapter::whereHas('story', function ($query) use ($slugStory) {
+            $query->where('slug', $slugStory);
+        })->where('status', 1)->select('title', 'slug')->get();
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'data' => $chapters
+            ]
+        ]);
     }
 
     public function detailChapter($slugStory, $slugChapter)

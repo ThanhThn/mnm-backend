@@ -126,10 +126,9 @@ Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], funct
 
 // Api Category front-end
 Route::get('categories', [FrontCategory::class, 'categories']);
-// Api stories of category
 Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
-// Api detail story
 Route::get('story/latest', [HomeController::class, 'latestStories']);
+Route::get('story/{slugStory}/chapters', [NovelController::class, 'chaptersOfTheStory']);
 Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
 Route::get('search', [HomeController::class, 'search']);
 Route::get('/{slugStory}/{slugChapter}', [NovelController::class, 'detailChapter']);

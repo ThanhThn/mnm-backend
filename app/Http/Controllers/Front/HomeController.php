@@ -56,12 +56,13 @@ class HomeController extends Controller
         ]);
     }
 
-    public function latestStories()
+    public function latestStories(Request $request)
     {
+        $limit = $request->limit ?? 20;
         $stories = Story::where('status', '!=', 0)->whereHas('chapters')
-            ->with(['chapters' => function ($query) {
+            ->with(['categories', 'chapters' => function ($query) {
                 $query->orderByDesc('created_at');
-            }])
+            }])->limit($limit)
             ->get()
             ->map(function ($story) {
                 $story->chapter = $story->chapters->first();
@@ -72,7 +73,7 @@ class HomeController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $stories->load('categories')
+                'data' => $stories
             ]
         ]);
     }
