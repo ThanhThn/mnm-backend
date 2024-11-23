@@ -14,8 +14,9 @@ class UserController extends Controller
     function updateUser(Request $request)
     {
         $data = $request->all();
+        Log::info($data);
         $partnerCode = $data["partnerCode"];
-        $accessKey = env("MOMO_ACCESS_KEY");
+//        $accessKey = env("MOMO_ACCESS_KEY");
         $serectkey = env("MOMO_SECRET_KEY");
         $orderId = $data["orderId"];
 //        $localMessage = $data["localMessage"];
@@ -33,8 +34,9 @@ class UserController extends Controller
 
 
 //        "&localMessage=" . $localMessage .
+//        . "&accessKey=" . $accessKey
         //Checksum
-        $rawHash = "partnerCode=" . $partnerCode . "&accessKey=" . $accessKey . "&requestId=" . $requestId . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+        $rawHash = "partnerCode=" . $partnerCode . "&requestId=" . $requestId . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
             "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&responseTime=" . $responseTime . "&resultCode=" . $resultCode .
             "&payType=" . $payType . "&extraData=" . $extraData;
 
@@ -47,7 +49,7 @@ class UserController extends Controller
 
         $payment = Payment::where('order_id', $orderId)->first();
 
-        if($errorCode != 0){
+        if($resultCode != 0){
             Log::error($message);
             $payment->update(['status' => 2]);
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, $message);
