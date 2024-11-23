@@ -17,9 +17,11 @@ class ChapterController extends Controller
     public function createChapter(CreateChapterRequest $request)
     {
         $data = $request->input();
+
+
         $chapter = Chapter::create(array_merge($data, [
             'slug' => Helpers::createSlug($request->title),
-            'processing' => true
+            'processing' => empty($request->sound)
         ]));
 
         if ($request->sound && !empty($request->sound)) {
@@ -73,6 +75,7 @@ class ChapterController extends Controller
         if ($chapter->processing) {
             return Helpers::response(JsonResponse::HTTP_FORBIDDEN, 'Cannot update chapter because it has already been processed.');
         }
+        $processing = false;
 
         if(!empty($data['sound']) && $chapter->sound)  {
             $utils::delete($chapter->sound);
@@ -81,7 +84,9 @@ class ChapterController extends Controller
             $path = $file->store('temp');
 
             $inforFile = Helpers::getFileNameAnExtension($file);
+
             UploadSound::dispatch($path, $chapter->id, $inforFile['name'], $inforFile['extension']);
+            $processing = true;
         }
 
         $chapter->update([
@@ -90,6 +95,7 @@ class ChapterController extends Controller
             'content' => $data['content'],
             'status' => $data['status'],
             'story_id' => $data['story_id'],
+            'processing' => $processing
         ]);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
