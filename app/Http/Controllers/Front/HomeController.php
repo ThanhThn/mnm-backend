@@ -41,7 +41,7 @@ class HomeController extends Controller
         }
         LogSearchQuery::dispatch($query);
         $storyResults = [];
-        $storyResults = Story::where('name', 'LIKE', "%{$query}%")
+        $storyResults = Story::where('name', 'LIKE', "%{$query}%")->where('status', '!=', 0)
             ->orWhereHas('author', function ($queryBuilder) use ($query) {
                 $queryBuilder->where('full_name', 'LIKE', "%{$query}%")
                     ->orWhere('pen_name', 'LIKE', "%{$query}%");
@@ -56,12 +56,13 @@ class HomeController extends Controller
         ]);
     }
 
-    public function latestStories()
+    public function latestStories(Request $request)
     {
-        $stories = Story::whereHas('chapters')
-            ->with(['chapters' => function ($query) {
+        $limit = $request->limit ?? 20;
+        $stories = Story::where('status', '!=', 0)->whereHas('chapters')
+            ->with(['categories', 'chapters' => function ($query) {
                 $query->orderByDesc('created_at');
-            }])
+            }])->limit($limit)
             ->get()
             ->map(function ($story) {
                 $story->chapter = $story->chapters->first();
@@ -72,7 +73,7 @@ class HomeController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $stories->load('categories')
+                'data' => $stories
             ]
         ]);
     }

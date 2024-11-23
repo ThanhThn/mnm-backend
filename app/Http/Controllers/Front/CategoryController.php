@@ -33,7 +33,7 @@ class CategoryController extends Controller
                 ]
             ], JsonResponse::HTTP_OK);
         }
-        $stories = $category->stories()->paginate($limit);
+        $stories = $category->stories()->where('status', '!=', 0)->paginate($limit);
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
