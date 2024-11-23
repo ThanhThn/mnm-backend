@@ -15,9 +15,11 @@ class NovelController extends Controller
         $story = Story::where('slug', $slugStory)
             ->where('status', '!=', 0)
             ->with([
-                'categories',
+                'categories:id,name,slug',
                 'chapters' => function ($query) {
-                    $query->where('status', 1);
+                    $query->where('status', 1)
+                        ->select('id', 'title', 'slug')
+                        ->orderBy('created_at', 'asc');
                 }
             ])->first();
         if (!$story) {
@@ -28,6 +30,7 @@ class NovelController extends Controller
                 ]
             ], JsonResponse::HTTP_NOT_FOUND);
         }
+        $story->increment('views');
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
@@ -55,7 +58,7 @@ class NovelController extends Controller
             ->whereHas('story', function ($query) use ($slugStory) {
                 $query->where('slug', $slugStory);
             })
-            ->with('story')
+            ->with('story:id,name,slug')
             ->first();
 
         if (!$chapter) {
@@ -66,15 +69,17 @@ class NovelController extends Controller
                 ]
             ], JsonResponse::HTTP_NOT_FOUND);
         }
-
+        $chapter->story->increment('views');
         $previousChapter = Chapter::where('story_id', $chapter->story_id)
             ->where('created_at', '<', $chapter->created_at)
             ->orderBy('created_at', 'desc')
+            ->select('slug')
             ->first();
 
         $nextChapter = Chapter::where('story_id', $chapter->story_id)
             ->where('created_at', '>', $chapter->created_at)
             ->orderBy('created_at', 'asc')
+            ->select('slug')
             ->first();
 
         return response()->json([
