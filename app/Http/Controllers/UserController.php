@@ -14,12 +14,11 @@ class UserController extends Controller
     function updateUser(Request $request)
     {
         $data = $request->all();
-        Log::info($data);
-        $partnerCode = env("MOMO_PARTNER_CODE");
+        $partnerCode = $data["partnerCode"];
         $accessKey = env("MOMO_ACCESS_KEY");
         $serectkey = env("MOMO_SECRET_KEY");
         $orderId = $data["orderId"];
-        $localMessage = $data["localMessage"];
+//        $localMessage = $data["localMessage"];
         $message = $data["message"];
         $transId = $data["transId"];
         $orderInfo = $data["orderInfo"];
@@ -33,9 +32,10 @@ class UserController extends Controller
         $m2signature = $data["signature"];
 
 
+//        "&localMessage=" . $localMessage .
         //Checksum
         $rawHash = "partnerCode=" . $partnerCode . "&accessKey=" . $accessKey . "&requestId=" . $requestId . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
-            "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&localMessage=" . $localMessage . "&responseTime=" . $responseTime . "&errorCode=" . $errorCode .
+            "&orderType=" . $orderType . "&transId=" . $transId . "&message=" . $message . "&responseTime=" . $responseTime . "&errorCode=" . $errorCode .
             "&payType=" . $payType . "&extraData=" . $extraData;
 
         $partnerSignature = hash_hmac("sha256", $rawHash, $serectkey);
