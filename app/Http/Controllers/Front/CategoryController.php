@@ -37,7 +37,8 @@ class CategoryController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $stories
+                'data' => $stories,
+                'category' => $category->name
             ]
         ], JsonResponse::HTTP_OK);
     }
