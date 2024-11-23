@@ -19,7 +19,7 @@ class ChapterController extends Controller
         $data = $request->input();
         $chapter = Chapter::create(array_merge($data, [
             'slug' => Helpers::createSlug($request->title),
-            // 'sound' => $request->sound
+            'processing' => true
         ]));
 
         if ($request->sound && !empty($request->sound)) {
@@ -70,6 +70,10 @@ class ChapterController extends Controller
         $data = $request->only(['id', 'title', 'story_id', 'content', 'status', 'sound']);
         $chapter = Chapter::find($data['id']);
 
+        if ($chapter->processing) {
+            return Helpers::response(JsonResponse::HTTP_FORBIDDEN, 'Cannot update chapter because it has already been processed.');
+        }
+
         if(!empty($data['sound']) && $chapter->sound)  {
             $utils::delete($chapter->sound);
 
@@ -99,6 +103,11 @@ class ChapterController extends Controller
     public function deleteChapter($id, S3Utils $utils)
     {
         $chapter = Chapter::find($id);
+
+        if ($chapter->processing) {
+            return Helpers::response(JsonResponse::HTTP_FORBIDDEN, 'Cannot update chapter because it has already been processed.');
+        }
+
         if (!$chapter) {
             return response()->json([
                 'status' => JsonResponse::HTTP_NOT_FOUND,

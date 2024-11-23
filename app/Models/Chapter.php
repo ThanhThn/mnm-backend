@@ -19,6 +19,7 @@ class Chapter extends Model
         'story_id',
         'sound',
         'status',
+        'processing'
     ];
     protected $primaryKey = "id";
     public $incrementing = false;

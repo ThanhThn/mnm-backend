@@ -42,7 +42,10 @@ class UploadSound implements ShouldQueue
         $utils = new S3Utils();
         $path = $utils->uploadLargeFile( 'sounds', $file, $this->fileName, $this->extension );
         $chapter = Chapter::find($this->chapterId);
-        $chapter->update(['sound' => $path]);
+        $chapter->update([
+            'sound' => $path,
+            'processing' => false
+        ]);
         Storage::delete($this->path);
     }
 }
