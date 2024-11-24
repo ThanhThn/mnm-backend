@@ -84,8 +84,13 @@ class HomeController extends Controller
 
     public function hotNovels($slugCategory = null)
     {
+        $limit = 16;
         if(!$slugCategory) {
-            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Not found');
+            $data = NovelCategory::with('novel')->get()
+                ->sortByDesc(function ($novel) {
+                    return $novel->novel->views ?? 0;
+                })->take($limit)->values()->toArray();
+            return Helpers::response(JsonResponse::HTTP_OK, data: $data);
         }
 
         $category = Category::where('slug', $slugCategory)->where('status', 1)->first();
@@ -97,10 +102,10 @@ class HomeController extends Controller
                 ]
             ], JsonResponse::HTTP_NOT_FOUND);
         }
-        $data = NovelCategory::where('category_id', $category->id)->with('novel')->limit(16)->get()
+        $data = NovelCategory::where('category_id', $category->id)->with('novel')->get()
             ->sortByDesc(function ($novel) {
             return $novel->novel->views ?? 0;
-        })->toArray();
+        })->take($limit)->values()->toArray();
         return Helpers::response(JsonResponse::HTTP_OK, data: $data);
     }
 }
