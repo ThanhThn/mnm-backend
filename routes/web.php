@@ -21,3 +21,5 @@ Route::group(["namespace" => "App\Http\Controllers\DataScraping", "prefix" => "s
     Route::get("/category", "ScrapingController@scrapingCategories");
     Route::get("/comics", "ScrapingController@scrapingComics");
 });
+
+Route::view("/otp", "otp");

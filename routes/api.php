@@ -41,7 +41,13 @@ Route::group([
         Route::post('/login', [AuthController::class, 'loginAdmin']);
     });
 });
-Route::post('user/update_role', [UserController::class, 'updateUser']);
+Route::group(['prefix' => 'user'] , function ($router) {
+    Route::post('update_role', [UserController::class, 'updateUser'])->middleware('jwt.verify');
+    Route::post('forget_password', [UserController::class, 'forgetUser']);
+    Route::post('check_otp', [UserController::class, 'resetUser']);
+    Route::post('reset_password', [UserController::class, 'resetPassword']);
+});
+
 Route::get('profile', [AuthController::class, 'profile'])->middleware('jwt.verify');
 
 Route::group(['prefix' => 'author',], function ($router) {
@@ -82,6 +88,9 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('detail/{id}', [StoryController::class, 'detailStory']);
     Route::get('completed-stories', [HomeController::class, 'completed_stories']);
     Route::get('data', [StoryController::class, 'dataStories']);
+    Route::get('latest', [HomeController::class, 'latestStories']);
+    Route::get('{slugStory}/chapters', [NovelController::class, 'chaptersOfTheStory']);
+    Route::get('{slugStory}', [NovelController::class, 'detailStory']);
 });
 
 
@@ -131,9 +140,6 @@ Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], funct
 // Api Category front-end
 Route::get('categories', [FrontCategory::class, 'categories']);
 Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
-Route::get('story/latest', [HomeController::class, 'latestStories']);
-Route::get('story/{slugStory}/chapters', [NovelController::class, 'chaptersOfTheStory']);
-Route::get('story/{slugStory}', [NovelController::class, 'detailStory']);
 Route::get('search', [HomeController::class, 'search']);
 Route::get('/hot-stories/{slugCategory?}', [HomeController::class, 'hotStories']);
 

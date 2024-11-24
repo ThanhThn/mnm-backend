@@ -70,4 +70,24 @@ class Helpers
         curl_close($ch);
         return $result;
     }
+
+    static function encrypt($data)
+    {
+        $publicPath = base_path('public.key');
+        $publicKey = file_get_contents($publicPath);
+
+        if(openssl_public_encrypt($data, $encrypted, $publicKey)){
+           return base64_encode($encrypted);
+        }
+        return false;
+    }
+
+    static function decrypt($data){
+        $privatePath = base_path('private.key');
+        $privateKey = file_get_contents($privatePath);
+        if(openssl_private_decrypt(base64_decode($data), $decrypted, $privateKey)){
+            return $decrypted;
+        }
+        return false;
+    }
 }
