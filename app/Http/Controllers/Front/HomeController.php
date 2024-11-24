@@ -11,6 +11,7 @@ use App\Models\NovelCategory;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -89,6 +90,7 @@ class HomeController extends Controller
             $data = NovelCategory::with('novel')->get()
                 ->unique('novel_id')
                 ->filter(function ($novel) {
+                    Log::info($novel->novel_id);
                     return $novel->novel->status != 0;
                 })
                 ->sortByDesc(function ($novel) {

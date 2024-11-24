@@ -21,10 +21,6 @@ class Story extends Model
         'thumbnail_id',
         'status',
     ];
-    protected $hidden = [
-        'author_id',
-        'thumbnail_id'
-    ];
     protected $appends = [
         'likes'
     ];
