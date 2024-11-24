@@ -86,7 +86,8 @@ class HomeController extends Controller
     {
         $limit = 16;
         if(!$slugCategory) {
-            $data = NovelCategory::distinct('novel_id')->with('novel')->get()
+            $data = NovelCategory::with('novel')->get()
+                ->unique('novel_id')
                 ->filter(function ($novel) {
                     return $novel->novel->status != 0;
                 })
@@ -106,8 +107,8 @@ class HomeController extends Controller
             ], JsonResponse::HTTP_NOT_FOUND);
         }
         $data = NovelCategory::where('category_id', $category->id)
-            ->distinct('novel_id')
             ->with('novel')->get()
+            ->unique('novel_id')
             ->filter(function ($novel) {
                 return $novel->novel->status != 0;
             })
