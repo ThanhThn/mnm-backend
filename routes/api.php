@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\CategoryControlller;
+use App\Http\Controllers\ComicController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PaymentController;
@@ -135,6 +136,12 @@ Route::group(['prefix' => 'ads', 'namespace' => 'App\Http\Controllers'], functio
 Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], function ($router) {
     Route::post('upload', 'SoundController@upload');
     Route::post('delete', [SoundController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'comic'], function ($router) {
+   Route::post("list", [ComicController::class, 'list']);
+   Route::get("detail/{id}", [ComicController::class, 'detail']);
+   Route::post("update", [ComicController::class, 'update'])->middleware(["jwt.verify", "auth.admin"]);
 });
 
 // Api Category front-end

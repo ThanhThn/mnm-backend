@@ -45,4 +45,8 @@ class Comics extends Model
     {
         return $this->morphMany(NovelCategory::class, 'novel');
     }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class, 'novels_categories', 'novel_id', 'category_id' );
+    }
 }

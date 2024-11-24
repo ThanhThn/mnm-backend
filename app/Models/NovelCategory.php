@@ -15,7 +15,20 @@ class NovelCategory extends Model
         'novel_type'
     ];
 
+    protected static function booted()
+    {
+        parent::boot();
+        static::addGlobalScope(function ($query) {
+            $query->with('category');
+        });
+    }
+
     public function novel(){
         return $this->morphTo();
+    }
+
+    public function category()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
     }
 }
