@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Mail\OTPMail;
+use App\Models\PasswordResetToken;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -78,6 +79,7 @@ class UserController extends Controller
         if($user->role == 1){
             return Helpers::response(JsonResponse::HTTP_CONFLICT, 'Role of user is admin');
         }
+        $resetToken = PasswordResetToken::where('email', $email) -> exits();
 
         $otp = rand(1000, 9999);
         $data = json_encode([
