@@ -81,13 +81,4 @@ class Helpers
         }
         return false;
     }
-
-    static function decrypt($data){
-        $privatePath = base_path('private.key');
-        $privateKey = file_get_contents($privatePath);
-        if(openssl_private_decrypt(base64_decode($data), $decrypted, $privateKey)){
-            return $decrypted;
-        }
-        return false;
-    }
 }

@@ -44,7 +44,7 @@ Route::group([
 Route::group(['prefix' => 'user'] , function ($router) {
     Route::post('update_role', [UserController::class, 'updateUser'])->middleware('jwt.verify');
     Route::post('forget_password', [UserController::class, 'forgetUser']);
-    Route::post('check_otp', [UserController::class, 'resetUser']);
+    Route::post('check_otp', [UserController::class, 'checkOTP']);
     Route::post('reset_password', [UserController::class, 'resetPassword']);
 });
 

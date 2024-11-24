@@ -13,4 +13,6 @@ class PasswordResetToken extends Model
         'email',
         'token'
     ];
+
+    const UPDATED_AT = null;
 }

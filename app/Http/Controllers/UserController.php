@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -62,7 +63,6 @@ class UserController extends Controller
         $payment->update(['status' => 1]);
         return Helpers::response(JsonResponse::HTTP_CREATED, 'User updated successfully');
     }
-
     function forgetUser(Request $request)
     {
         $email = $request->email;
@@ -79,22 +79,82 @@ class UserController extends Controller
         if($user->role == 1){
             return Helpers::response(JsonResponse::HTTP_CONFLICT, 'Role of user is admin');
         }
-        $resetToken = PasswordResetToken::where('email', $email) -> exits();
+        $resetToken = PasswordResetToken::where('email', $email)->exists();
 
         $otp = rand(1000, 9999);
         $data = json_encode([
             'otp' => $otp,
-            'exp' => time() + 60 * 60,
+            'exp' => time() + 60,
         ]);
         $encrypt = Helpers::encrypt($data);
-        $decrypt = Helpers::decrypt($encrypt);
+
+        if($resetToken){
+            $resetToken->update(['token' => $encrypt]);
+        }else{
+            PasswordResetToken::create([
+                'email' => $email,
+                'token' => $encrypt,
+            ]);
+        }
 
         Mail::to($email)->send(new OTPMail($otp));
         return response() -> json([
-            'otp' => $otp,
-            'encrypt' => $encrypt,
-            'decrypt' => json_decode($decrypt, true)
+            'token' => $encrypt,
         ]);
+    }
 
+    function checkOTP(Request $request){
+        $data = $request->only(['otp', 'exp']);
+
+        if(empty($data['otp']) || empty($data['exp'])){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
+        }
+
+        if(!empty($data['exp']) && $data['exp'] > time()){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP expired');
+        }
+
+        $dataRequest = json_encode([
+            'otp' => $data['otp'],
+            'exp' => $data['exp'],
+        ]);
+        $encrypt = Helpers::encrypt($dataRequest);
+
+        $token = PasswordResetToken::where('token', $encrypt) -> exists();
+        if(!$token){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
+        }
+
+        if($token->token != $encrypt){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP not valid');
+        }
+        return Helpers::response(JsonResponse::HTTP_OK, data: true);
+    }
+
+    function resetPassword(Request $request)
+    {
+        $data = $request->only(['otp', 'exp', 'password']);
+        if(empty($data['otp']) || empty($data['exp']) || empty($data['password'])){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
+        }
+
+        $dataRequest = json_encode([
+            'otp' => $data['otp'],
+            'exp' => $data['exp'],
+        ]);
+        $encrypt = Helpers::encrypt($dataRequest);
+
+        $token = PasswordResetToken::where('token', $encrypt) -> exists();
+        if(!$token){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
+        }
+
+        $user = User::where('email', $token->email) -> first();
+        if(!$user){
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'User not found');
+        }
+        $user->update(['password' => Hash::make($data['password'])]);
+        $token->delete();
+        return Helpers::response(JsonResponse::HTTP_OK, data: true);
     }
 }
