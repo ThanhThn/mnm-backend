@@ -16,7 +16,8 @@ class Comics extends Model
         "api_id",
         "name",
         "slug",
-        "thumbnail"
+        "thumbnail",
+        "status",
     ];
     protected $appends = [
         'likes'
