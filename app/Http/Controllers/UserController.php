@@ -18,7 +18,6 @@ class UserController extends Controller
     function updateUser(Request $request)
     {
         $data = $request->all();
-        Log::info($data);
         $partnerCode = $data["partnerCode"];
         $accessKey = env("MOMO_ACCESS_KEY");
         $serectkey = env("MOMO_SECRET_KEY");
@@ -44,9 +43,7 @@ class UserController extends Controller
             "&resultCode=" . $resultCode . "&transId=" . $transId;
 
         $partnerSignature = hash_hmac("sha256", $rawHash, $serectkey);
-
-        Log::info($partnerSignature);
-        Log::info($m2signature);
+        
         if ($m2signature != $partnerSignature){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Can not update role of user');
         }
