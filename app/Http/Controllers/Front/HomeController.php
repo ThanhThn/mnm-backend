@@ -90,7 +90,6 @@ class HomeController extends Controller
             $data = NovelCategory::with('novel')->get()
                 ->unique('novel_id')
                 ->filter(function ($novel) {
-                    Log::info($novel->novel_id);
                     return $novel->novel->status != 0;
                 })
                 ->sortByDesc(function ($novel) {

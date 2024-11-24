@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\NovelCategory;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -21,9 +23,10 @@ class CategoryController extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
-    public function storiesOfCategory($slugCategory, Request $request)
+    public function novelsOfCategory($slugCategory, Request $request)
     {
         $limit = $request->input('limit', 15);
+        $offset = $request->input('offset', 0);
         $category = Category::where('slug', $slugCategory)->first();
         if (!$category) {
             return response()->json([
@@ -33,10 +36,21 @@ class CategoryController extends Controller
                 ]
             ], JsonResponse::HTTP_OK);
         }
-        $stories = $category->stories()->where('status', '!=', 0)->paginate($limit);
+        $count = NovelCategory::where('category_id', $category->id)->count();
+        $stories = NovelCategory::where("category_id", $category->id)
+            ->with('novel')->get()
+            ->unique('novel_id')
+            ->filter(function ($novel) {
+                return $novel->novel->status != 0;
+            })
+            ->sortByDesc(function ($novel) {
+                return $novel->novel->views ?? 0;
+            })->splice($offset, $limit)->values()->toArray();
+
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
+                'count' => $count,
                 'data' => $stories,
                 'category' => $category->name
             ]

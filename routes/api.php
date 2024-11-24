@@ -76,6 +76,7 @@ Route::group(['prefix' => 'category',], function ($router) {
     Route::get('detail/{id}', [CategoryControlller::class, 'detailCategory']);
     Route::get('list', [CategoryControlller::class, 'listCategories']);
     Route::get('data', [CategoryControlller::class, 'dataCategories']);
+    Route::post('novel/{slugCategory}', [FrontCategory::class, 'novelsOfCategory']);
 });
 
 /* --------- API Story ----------- */
@@ -146,7 +147,6 @@ Route::group(['prefix' => 'comic'], function ($router) {
 
 // Api Category front-end
 Route::get('categories', [FrontCategory::class, 'categories']);
-Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
 Route::get('search', [HomeController::class, 'search']);
 Route::get('/hot-novels/{slugCategory?}', [HomeController::class, 'hotNovels']);
 
