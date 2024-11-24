@@ -52,7 +52,8 @@ class CategoryController extends Controller
             'body' => [
                 'count' => $count,
                 'data' => $stories,
-                'category' => $category->name
+                'category' => $category->name,
+                'description' => $category->desciption
             ]
         ], JsonResponse::HTTP_OK);
     }
