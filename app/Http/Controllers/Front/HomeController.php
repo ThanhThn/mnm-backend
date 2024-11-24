@@ -48,7 +48,7 @@ class HomeController extends Controller
             ->where('status', '!=', 0)->get();
 
         $authorResult = Author::where('full_name', 'LIKE', "%{$query}%")
-            ->orWhere('pen_name', 'LIKE',"%{$query}%")
+            ->orWhere('pen_name', 'LIKE', "%{$query}%")
             ->get();
         $result['authors'] = $authorResult;
         $result['stories'] = $storyResults;
@@ -86,7 +86,7 @@ class HomeController extends Controller
     public function hotNovels($slugCategory = null)
     {
         $limit = 16;
-        if(!$slugCategory) {
+        if (!$slugCategory) {
             $data = NovelCategory::with('novel')->get()
                 ->unique('novel_id')
                 ->filter(function ($novel) {
@@ -95,7 +95,7 @@ class HomeController extends Controller
                 })
                 ->sortByDesc(function ($novel) {
                     return $novel->novel->views ?? 0;
-                })->take($limit)->values()->toArray();
+                })->take($limit)->shuffle()->values()->toArray();
             return Helpers::response(JsonResponse::HTTP_OK, data: $data);
         }
 
@@ -115,8 +115,8 @@ class HomeController extends Controller
                 return $novel->novel->status != 0;
             })
             ->sortByDesc(function ($novel) {
-            return $novel->novel->views ?? 0;
-        })->take($limit)->values()->toArray();
+                return $novel->novel->views ?? 0;
+            })->take($limit)->shuffle()->values()->toArray();
         return Helpers::response(JsonResponse::HTTP_OK, data: $data);
     }
 }
