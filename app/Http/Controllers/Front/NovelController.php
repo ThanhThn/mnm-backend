@@ -18,7 +18,6 @@ class NovelController extends Controller
                 'categories:id,name,slug',
                 'chapters' => function ($query) {
                     $query->where('status', 1)
-                        ->select('id', 'title', 'slug')
                         ->orderBy('created_at', 'asc');
                 }
             ])->first();
