@@ -9,7 +9,7 @@ class CreateChapterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:100',
+            'title' => 'required|string|unique:chapters,title|max:100',
             'content' => 'required|string',
             'status' => 'required|integer',
             'story_id' => 'required|uuid|exists:stories,id',
