@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Jobs\LogSearchQuery;
 use App\Models\Author;
 use App\Models\Category;
+use App\Models\NovelCategory;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -80,27 +82,25 @@ class HomeController extends Controller
         ]);
     }
 
-    public function hotStories($slugCategory = null)
+    public function hotNovels($slugCategory = null)
     {
-        if ($slugCategory) {
-            $category = Category::where('slug', $slugCategory)->where('status', 1)->first();
-            if (!$category) {
-                return response()->json([
-                    'status' => JsonResponse::HTTP_NOT_FOUND,
-                    'body' => [
-                        'message' => 'Category not found'
-                    ]
-                ], JsonResponse::HTTP_NOT_FOUND);
-            }
-            $stories = $category->stories()->where('status', '!=', 0)->orderByDesc('views')->limit(16)->get();
-        } else {
-            $stories = Story::where('status', '!=', 0)->orderByDesc('views')->limit(16)->get();
+        if(!$slugCategory) {
+            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Not found');
         }
-        return response()->json([
-            'status' => JsonResponse::HTTP_OK,
-            'body' => [
-                'data' => $stories
-            ]
-        ]);
+
+        $category = Category::where('slug', $slugCategory)->where('status', 1)->first();
+        if (!$category) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_NOT_FOUND,
+                'body' => [
+                    'message' => 'Category not found'
+                ]
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+        $data = NovelCategory::where('category_id', $category->id)->with('novel')->limit(16)->get()
+            ->sortByDesc(function ($novel) {
+            return $novel->novel->views ?? 0;
+        })->toArray();
+        return Helpers::response(JsonResponse::HTTP_OK, data: $data);
     }
 }

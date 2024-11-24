@@ -69,4 +69,9 @@ class Story extends Model
     {
         return InteractionSupport::countInteraction(1, $this->id, 2);
     }
+
+    public function information()
+    {
+        return $this->morphMany(NovelCategory::class, 'novel')->where("status", "!=", 0);
+    }
 }

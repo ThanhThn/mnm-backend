@@ -13,7 +13,10 @@ class Comics extends Model
     use HasFactory;
     protected $table="comics";
     protected $fillable=[
-        "api_id"
+        "api_id",
+        "name",
+        "slug",
+        "thumbnail"
     ];
     protected $appends = [
         'likes'
@@ -36,5 +39,10 @@ class Comics extends Model
 
     public function getLikesAttribute(){
         return InteractionSupport::countInteraction(1, $this->id, 3);
+    }
+
+    public function information()
+    {
+        return $this->morphMany(NovelCategory::class, 'novel')->where('status', '!=', 0);
     }
 }

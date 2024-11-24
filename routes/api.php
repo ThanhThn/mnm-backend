@@ -141,7 +141,7 @@ Route::group(['prefix' => 'sound', 'namespace' => 'App\Http\Controllers'], funct
 Route::get('categories', [FrontCategory::class, 'categories']);
 Route::get('category/{slugCategory}', [FrontCategory::class, 'storiesOfCategory']);
 Route::get('search', [HomeController::class, 'search']);
-Route::get('/hot-stories/{slugCategory?}', [HomeController::class, 'hotStories']);
+Route::get('/hot-novels/{slugCategory?}', [HomeController::class, 'hotNovels']);
 
 Route::group(['prefix' => 'payment'], function ($router) {
     Route::post('create', [PaymentController::class, 'createPayment']) ->middleware('jwt.verify');

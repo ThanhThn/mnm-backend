@@ -14,4 +14,8 @@ class NovelCategory extends Model
         'category_id',
         'novel_type'
     ];
+
+    public function novel(){
+        return $this->morphTo();
+    }
 }

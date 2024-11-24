@@ -50,7 +50,18 @@ class ScrapingController extends Controller
                         Comics::where('api_id', $responseJson["data"]["items"][$i]["_id"])->first() :
                         Comics::create([
                         "api_id" => $responseJson["data"]["items"][$i]["_id"],
+                        "name" => $responseJson["data"]["items"][$i]["name"],
+                        "slug" => $responseJson["data"]["items"][$i]["slug"],
+                        "thumbnail" => env("URL_IMAGE_COMIC") . "/" .$responseJson["data"]["items"][$i]["thumb_url"],
                     ]);
+
+                    if($exist){
+                        $comic->update([
+                            "name" => $responseJson["data"]["items"][$i]["name"],
+                            "slug" => $responseJson["data"]["items"][$i]["slug"],
+                            "thumbnail" => env("URL_IMAGE_COMIC") . "/" .$responseJson["data"]["items"][$i]["thumb_url"]
+                        ]);
+                    }
                     $existConnect = NovelCategory::where("category_id", $category->id)
                         ->where("novel_id", $comic->id)
                         ->exists();
