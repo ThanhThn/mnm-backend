@@ -72,6 +72,6 @@ class Story extends Model
 
     public function information()
     {
-        return $this->morphMany(NovelCategory::class, 'novel')->where("status", "!=", 0);
+        return $this->morphMany(NovelCategory::class, 'novel');
     }
 }

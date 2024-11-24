@@ -86,7 +86,10 @@ class HomeController extends Controller
     {
         $limit = 16;
         if(!$slugCategory) {
-            $data = NovelCategory::with('novel')->get()
+            $data = NovelCategory::distinct('novel_id')->with('novel')->get()
+                ->filter(function ($novel) {
+                    return $novel->novel->status != 0;
+                })
                 ->sortByDesc(function ($novel) {
                     return $novel->novel->views ?? 0;
                 })->take($limit)->values()->toArray();
@@ -102,7 +105,12 @@ class HomeController extends Controller
                 ]
             ], JsonResponse::HTTP_NOT_FOUND);
         }
-        $data = NovelCategory::where('category_id', $category->id)->with('novel')->get()
+        $data = NovelCategory::where('category_id', $category->id)
+            ->distinct('novel_id')
+            ->with('novel')->get()
+            ->filter(function ($novel) {
+                return $novel->novel->status != 0;
+            })
             ->sortByDesc(function ($novel) {
             return $novel->novel->views ?? 0;
         })->take($limit)->values()->toArray();
