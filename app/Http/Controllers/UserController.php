@@ -84,7 +84,7 @@ class UserController extends Controller
         $otp = rand(10000, 99999);
         $data = json_encode([
             'otp' => $otp,
-            'exp' => time() + 60,
+            'exp' => time() + 5 * 60,
         ]);
         $encrypt = Helpers::encrypt($data);
 
