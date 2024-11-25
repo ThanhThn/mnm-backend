@@ -108,7 +108,7 @@ class UserController extends Controller
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
         }
 
-        if(!empty($data['exp']) && $data['exp'] > time()){
+        if(!empty($data['exp']) && $data['exp'] < time()){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP expired');
         }
 
