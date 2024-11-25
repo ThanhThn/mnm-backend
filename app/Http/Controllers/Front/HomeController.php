@@ -100,7 +100,7 @@ class HomeController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => [
-                'data' => $stories
+                'data' => $stories->values()
             ]
         ]);
     }
