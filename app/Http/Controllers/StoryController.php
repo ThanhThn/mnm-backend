@@ -131,4 +131,12 @@ class StoryController extends Controller
         if (!$story) return Helpers::response(JsonResponse::HTTP_NOT_FOUND, 'Story not found');
         return Helpers::response(JsonResponse::HTTP_OK, data: $story);
     }
+
+    public function listStoriesByAuthor($author_id)
+    {
+        $stories = Story::where("author_id", $author_id)->get();
+        $count = count($stories);
+
+        return Helpers::response(JsonResponse::HTTP_OK, data: $stories, options: ['count' => $count]);
+    }
 }

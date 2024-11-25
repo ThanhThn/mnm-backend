@@ -73,12 +73,16 @@ class Helpers
 
     static function encrypt($data)
     {
-        $publicPath = base_path('public.key');
-        $publicKey = file_get_contents($publicPath);
+        $key = base64_decode(env('AES_KEY'));
 
-        if(openssl_public_encrypt($data, $encrypted, $publicKey)){
-           return base64_encode($encrypted);
-        }
-        return false;
+        $iv = random_bytes(16);
+
+        $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        $encryptedData = base64_encode($encrypted);
+        $ivBase64 = base64_encode($iv);
+        return [
+            "token" => $encryptedData,
+            "iv" => $ivBase64,
+        ];
     }
 }

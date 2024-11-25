@@ -43,7 +43,7 @@ class UserController extends Controller
             "&resultCode=" . $resultCode . "&transId=" . $transId;
 
         $partnerSignature = hash_hmac("sha256", $rawHash, $serectkey);
-        
+
         if ($m2signature != $partnerSignature){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Can not update role of user');
         }
@@ -79,9 +79,9 @@ class UserController extends Controller
         if($user->role == 1){
             return Helpers::response(JsonResponse::HTTP_CONFLICT, 'Role of user is admin');
         }
-        $resetToken = PasswordResetToken::where('email', $email)->exists();
+        $resetToken = PasswordResetToken::where('email', $email)->first();
 
-        $otp = rand(1000, 9999);
+        $otp = rand(10000, 99999);
         $data = json_encode([
             'otp' => $otp,
             'exp' => time() + 60,
@@ -89,18 +89,16 @@ class UserController extends Controller
         $encrypt = Helpers::encrypt($data);
 
         if($resetToken){
-            $resetToken->update(['token' => $encrypt]);
+            $resetToken->where("email", $email)->update(['token' => $encrypt["token"]]);
         }else{
             PasswordResetToken::create([
                 'email' => $email,
-                'token' => $encrypt,
+                'token' => $encrypt["token"],
             ]);
         }
 
         Mail::to($email)->send(new OTPMail($otp));
-        return response() -> json([
-            'token' => $encrypt,
-        ]);
+        return Helpers::response(JsonResponse::HTTP_OK, 'OTP send successfully', $encrypt);
     }
 
     function checkOTP(Request $request){

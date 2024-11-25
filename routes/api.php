@@ -93,6 +93,7 @@ Route::group(['prefix' => 'story',], function ($router) {
     Route::get('latest', [HomeController::class, 'latestStories']);
     Route::get('{slugStory}/chapters', [NovelController::class, 'chaptersOfTheStory']);
     Route::get('{slugStory}', [NovelController::class, 'detailStory']);
+    Route::get("list_by_author/{author_id}", [StoryController::class, 'listStoriesByAuthor']);
 });
 
 
