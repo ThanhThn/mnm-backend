@@ -102,9 +102,9 @@ class UserController extends Controller
     }
 
     function checkOTP(Request $request){
-        $data = $request->only(['otp', 'exp']);
+        $data = $request->only(['otp', 'exp', 'iv']);
 
-        if(empty($data['otp']) || empty($data['exp'])){
+        if(empty($data['otp']) || empty($data['exp']) || empty($data['iv'])){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
         }
 
@@ -116,7 +116,7 @@ class UserController extends Controller
             'otp' => $data['otp'],
             'exp' => $data['exp'],
         ]);
-        $encrypt = Helpers::encrypt($dataRequest);
+        $encrypt = Helpers::encrypt($dataRequest, base64_decode($data['iv']));
         $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
         if(!$token){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
@@ -130,8 +130,8 @@ class UserController extends Controller
 
     function resetPassword(Request $request)
     {
-        $data = $request->only(['otp', 'exp', 'password']);
-        if(empty($data['otp']) || empty($data['exp']) || empty($data['password'])){
+        $data = $request->only(['otp', 'exp', 'password', 'iv']);
+        if(empty($data['otp']) || empty($data['exp']) || empty($data['password']) || empty($data['iv'])){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
         }
 
@@ -139,7 +139,8 @@ class UserController extends Controller
             'otp' => $data['otp'],
             'exp' => $data['exp'],
         ]);
-        $encrypt = Helpers::encrypt($dataRequest);
+        $encrypt = Helpers::encrypt($dataRequest, base64_decode($data['iv']));
+
 
         $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
         if(!$token){

@@ -71,11 +71,11 @@ class Helpers
         return $result;
     }
 
-    static function encrypt($data)
+    static function encrypt($data, $iv = null)
     {
         $key = base64_decode(env('AES_KEY'));
 
-        $iv = random_bytes(16);
+        $iv = $iv ?? random_bytes(16);
 
         $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
         $encryptedData = base64_encode($encrypted);
