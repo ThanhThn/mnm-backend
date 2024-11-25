@@ -84,7 +84,7 @@ class UserController extends Controller
         $otp = rand(10000, 99999);
         $data = json_encode([
             'otp' => $otp,
-            'exp' => time() + 5 * 60,
+            'exp' => time() + 2 * 60,
         ]);
         $encrypt = Helpers::encrypt($data);
 
@@ -117,8 +117,7 @@ class UserController extends Controller
             'exp' => $data['exp'],
         ]);
         $encrypt = Helpers::encrypt($dataRequest);
-
-        $token = PasswordResetToken::where('token', $encrypt) -> exists();
+        $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
         if(!$token){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
         }
@@ -142,7 +141,7 @@ class UserController extends Controller
         ]);
         $encrypt = Helpers::encrypt($dataRequest);
 
-        $token = PasswordResetToken::where('token', $encrypt) -> exists();
+        $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
         if(!$token){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
         }
