@@ -154,7 +154,7 @@ class UserController extends Controller
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'User not found');
         }
         $user->update(['password' => Hash::make($data['password'])]);
-        $token->delete();
+        PasswordResetToken::where('token', $token->token)->delete();
         return Helpers::response(JsonResponse::HTTP_OK, data: true);
     }
 }
