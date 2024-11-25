@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\LogSearchQuery;
 use App\Models\Author;
 use App\Models\Category;
+use App\Models\Comics;
 use App\Models\NovelCategory;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +35,6 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q');
-
         if (!$query) {
             return response()->json([
                 'status' => JsonResponse::HTTP_BAD_REQUEST,
@@ -45,13 +45,27 @@ class HomeController extends Controller
         }
         $result = [];
         $storyResults = Story::where('name', 'LIKE', "%{$query}%")
-            ->where('status', '!=', 0)->get();
+            ->where('status', '!=', 0)
+            ->get()
+            ->map(function ($story) {
+                $story->type = 'story';
+                return $story;
+            });
+        $comicResults = Comics::where('name', 'LIKE', "%{$query}%")
+            ->where('status', 1)
+            ->get()
+            ->map(function ($comic) {
+                $comic->type = 'comic';
+                return $comic;
+            });
 
+        $combinedResults = $storyResults->merge($comicResults);
         $authorResult = Author::where('full_name', 'LIKE', "%{$query}%")
             ->orWhere('pen_name', 'LIKE', "%{$query}%")
             ->get();
+
         $result['authors'] = $authorResult;
-        $result['stories'] = $storyResults;
+        $result['novels'] = $combinedResults;
 
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
@@ -60,6 +74,7 @@ class HomeController extends Controller
             ]
         ]);
     }
+
 
     public function latestStories(Request $request)
     {
