@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Comics;
 use App\Models\NovelCategory;
 use App\Models\Story;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -79,16 +80,22 @@ class HomeController extends Controller
     public function latestStories(Request $request)
     {
         $limit = $request->limit ?? 20;
-        $stories = Story::where('status', '!=', 0)->whereHas('chapters')
+
+        $stories = Story::where('status', '!=', 0)
+            ->whereHas('chapters')
             ->with(['categories', 'chapters' => function ($query) {
-                $query->orderByDesc('created_at');
-            }])->limit($limit)
+                $query->orderBy('created_at', 'desc');
+            }])
             ->get()
             ->map(function ($story) {
                 $story->chapter = $story->chapters->first();
                 unset($story->chapters);
                 return $story;
-            });
+            })
+            ->sortByDesc(function ($story) {
+                return $story->chapter ? $story->chapter->created_at : 0;
+            })
+            ->take($limit);
 
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
@@ -97,6 +104,7 @@ class HomeController extends Controller
             ]
         ]);
     }
+
 
     public function hotNovels($slugCategory = null)
     {
