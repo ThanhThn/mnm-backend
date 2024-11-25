@@ -87,8 +87,6 @@ class UserController extends Controller
             'otp' => $otp,
             'exp' => $time,
         ]);
-        echo gettype($otp);
-        echo gettype($time);
         $encrypt = Helpers::encrypt($data);
 
         if($resetToken){
