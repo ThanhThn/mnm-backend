@@ -82,10 +82,13 @@ class UserController extends Controller
         $resetToken = PasswordResetToken::where('email', $email)->first();
 
         $otp = rand(10000, 99999);
+        $time = time() + 5 * 60;
         $data = json_encode([
             'otp' => $otp,
-            'exp' => time() + 2 * 60,
+            'exp' => $time,
         ]);
+        echo gettype($otp);
+        echo gettype($time);
         $encrypt = Helpers::encrypt($data);
 
         if($resetToken){
@@ -98,7 +101,7 @@ class UserController extends Controller
         }
 
         Mail::to($email)->send(new OTPMail($otp));
-        return Helpers::response(JsonResponse::HTTP_OK, 'OTP send successfully', $encrypt);
+        return Helpers::response(JsonResponse::HTTP_OK, 'OTP send successfully', $encrypt, options: ['exp' => $time]);
     }
 
     function checkOTP(Request $request){
@@ -108,21 +111,22 @@ class UserController extends Controller
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP cannot be empty');
         }
 
-        if(!empty($data['exp']) && $data['exp'] < time()){
-            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP expired');
-        }
+//        if(!empty($data['exp']) && $data['exp'] < time()){
+//            return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP expired');
+//        }
 
         $dataRequest = json_encode([
-            'otp' => $data['otp'],
+            'otp' => (int)$data['otp'],
             'exp' => $data['exp'],
         ]);
+
         $encrypt = Helpers::encrypt($dataRequest, base64_decode($data['iv']));
-        $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
+        $token = PasswordResetToken::where('token', $encrypt['token']) -> first();
         if(!$token){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
         }
 
-        if($token->token != $encrypt){
+        if($token->token != $encrypt['token']){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'OTP not valid');
         }
         return Helpers::response(JsonResponse::HTTP_OK, data: true);
@@ -136,13 +140,13 @@ class UserController extends Controller
         }
 
         $dataRequest = json_encode([
-            'otp' => $data['otp'],
+            'otp' => (int)$data['otp'],
             'exp' => $data['exp'],
         ]);
         $encrypt = Helpers::encrypt($dataRequest, base64_decode($data['iv']));
 
 
-        $token = PasswordResetToken::where('token', $encrypt['token']) -> exists();
+        $token = PasswordResetToken::where('token', $encrypt['token']) -> first();
         if(!$token){
             return Helpers::response(JsonResponse::HTTP_BAD_REQUEST, 'Token not found');
         }
